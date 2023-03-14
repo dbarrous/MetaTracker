@@ -10,6 +10,12 @@ __pycache__/
 # C extensions
 *.so
 
+# VSCode
+.vscode/
+
+# Ruff Cache
+.ruff-cache/
+
 # Distribution / packaging
 .Python
 build/
