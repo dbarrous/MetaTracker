@@ -4,15 +4,16 @@
 #   full_name: str
 #   description: str
 
-from base_table import Base
 from sqlalchemy import Column, String
 
-from cdftracker import CDFTRACKER_CONFIG
+from cdftracker import MISSION_NAME
+
+from . import base_table as Base
 
 
-class FileLevelTable(Base):
+class FileLevelTable(Base.Base):
     # Name Of Table
-    __tablename__ = f"{CDFTRACKER_CONFIG['mission_name']}_file_level"
+    __tablename__ = f"{MISSION_NAME}_file_level"
 
     # Short Name Of File Level
     short_name = Column(String, primary_key=True)
@@ -35,8 +36,8 @@ class FileLevelTable(Base):
         return super().__repr__()
 
 
-def return_table() -> type:
+def return_class() -> type:
     """
-    Create File Type Table
+    Return Class
     """
-    return FileLevelTable.__table__
+    return FileLevelTable

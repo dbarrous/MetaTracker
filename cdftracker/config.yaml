@@ -1,0 +1,105 @@
+# This file is used to configure the CDF Tracker
+# The following are the default values
+# The values can be changed to suit your needs
+
+
+# Mission Name
+# The name of the mission
+# eg.
+# mission_name: hermes
+mission_name: hermes
+
+
+# File Levels
+# The file levels are used to categorize the files
+# eg.
+# file_levels:
+# - description: Level 0 File
+#   full_name: Level 0
+#   short_name: l0
+file_levels:
+- description: Level 0 File
+  full_name: Level 0
+  short_name: l0
+- description: Level 1 File
+  full_name: Level 1
+  short_name: l1
+- description: Quick Look File
+  full_name: Quick Look
+  short_name: ql
+
+
+# File Types
+# The file types are used to categorize the files
+# eg.
+# file_types:
+# - description: Raw Binary File
+#   full_name: Raw Binary
+#   short_name: raw
+file_types:
+- description: Raw Binary File
+  full_name: Raw Binary
+  short_name: raw
+- description: Common Data Format File
+  full_name: Common Data Format
+  short_name: cdf
+
+
+# Instrument Configurations
+# The different combinations of instruments are listed here
+# eg.
+# instrument_configurations:
+# - instrument_1_id: 1
+#   instrument_2_id: null
+#   instrument_3_id: null
+#   instrument_4_id: null
+instrument_configurations:
+- instrument_configuration_id: 1
+  instrument_1_id: 1
+  instrument_2_id: null
+  instrument_3_id: null
+  instrument_4_id: null
+- instrument_configuration_id: 2 
+  instrument_1_id: 2
+  instrument_2_id: null
+  instrument_3_id: null
+  instrument_4_id: null
+- instrument_configuration_id: 3
+  instrument_1_id: 3
+  instrument_2_id: null
+  instrument_3_id: null
+  instrument_4_id: null
+- instrument_configuration_id: 4
+  instrument_1_id: 4
+  instrument_2_id: null
+  instrument_3_id: null
+  instrument_4_id: null
+  
+
+
+# Instruments
+# The different instruments are listed here
+# eg.
+# instruments:
+# - instrument_id: 1
+#   description: Electron Electrostatic Analyzer (EEA)
+#   full_name: EEA
+#   short_name: eea
+instruments:
+- instrument_id: 1
+  description: Electron Electrostatic Analyzer (EEA)
+  full_name: EEA
+  short_name: eea
+- instrument_id: 2
+  description: Noise Eliminating Magnetometer Instrument in a Small Integrated System
+  full_name: NEMISIS
+  short_name: nemisis
+- instrument_id: 3
+  description: Solar Probe Analyzer for Ions
+  full_name: SPANI-I
+  short_name: spani
+- instrument_id: 4
+  description: Miniaturized Electron pRoton Telescope
+  full_name: MERIT
+  short_name: merit
+

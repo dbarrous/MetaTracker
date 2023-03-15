@@ -14,7 +14,7 @@ __pycache__/
 .vscode/
 
 # Ruff Cache
-.ruff-cache/
+.ruff_cache/
 
 # Distribution / packaging
 .Python

@@ -5,15 +5,16 @@
 #   mode: str
 #   reference_timestamp: datetime
 
-from base_table import Base
 from sqlalchemy import Column, Integer, String
 
-from cdftracker import CDFTRACKER_CONFIG
+from cdftracker import MISSION_NAME
+
+from . import base_table as Base
 
 
-class InstrumentTable(Base):
+class InstrumentTable(Base.Base):
     # Name Of Table
-    __tablename__ = f"{CDFTRACKER_CONFIG['mission_name']}_instrument"
+    __tablename__ = f"{MISSION_NAME}_instrument"
 
     # ID Of Instrument (Primary Key)
     instrument_id = Column(Integer, primary_key=True)
@@ -40,8 +41,8 @@ class InstrumentTable(Base):
         return super().__repr__()
 
 
-def return_table() -> type:
+def return_class() -> type:
     """
-    Create File Type Table
+    Return Class
     """
-    return InstrumentTable.__table__
+    return InstrumentTable

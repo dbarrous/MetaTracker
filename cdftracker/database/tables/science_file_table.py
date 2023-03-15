@@ -15,29 +15,28 @@
 
 from datetime import datetime
 
-from base_table import Base
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 
-from cdftracker import CDFTRACKER_CONFIG
+from cdftracker import MISSION_NAME
+
+from . import base_table as Base
 
 
-class ScienceFileTable(Base):
+class ScienceFileTable(Base.Base):
     # Name Of Table
-    __tablename__ = f"{CDFTRACKER_CONFIG['mission_name']}_science_file"
+    __tablename__ = f"{MISSION_NAME}_science_file"
 
     # ID Of Science File (Primary Key)
     science_file_id = Column(Integer, primary_key=True, autoincrement=True)
 
     # ID Of Science Product (Foreign Key)
-    science_product_id = Column(
-        Integer, ForeignKey(f"{CDFTRACKER_CONFIG['mission_name']}_science_product.science_product_id")
-    )
+    science_product_id = Column(Integer, ForeignKey(f"{MISSION_NAME}_science_product.science_product_id"))
 
     # File Type Of Science File (Foreign Key)
-    file_type = Column(String, ForeignKey(f"{CDFTRACKER_CONFIG['mission_name']}_file_type.short_name"))
+    file_type = Column(String, ForeignKey(f"{MISSION_NAME}_file_type.short_name"))
 
     # File Level Of Science File (Foreign Key)
-    file_level = Column(String, ForeignKey(f"{CDFTRACKER_CONFIG['mission_name']}_file_level.short_name"))
+    file_level = Column(String, ForeignKey(f"{MISSION_NAME}_file_level.short_name"))
 
     # Filename Of Science File
     filename = Column(String)
@@ -92,8 +91,8 @@ class ScienceFileTable(Base):
         return super().__repr__()
 
 
-def return_table() -> type:
+def return_class() -> type:
     """
-    Create File Type Table
+    Return Class
     """
-    return ScienceFileTable.__table__
+    return ScienceFileTable
