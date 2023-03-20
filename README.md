@@ -11,38 +11,31 @@ This is a python package that helps keep track of both Raw Binary and CDF Files 
 - **Github repository**: <https://github.com/dbarrous/CDFTracker/>
 - **Documentation** <https://dbarrous.github.io/CDFTracker/>
 
-## Getting started with your project
+## How to set-up Development Environment
+This project makes use of [Poetry](https://python-poetry.org/) to manage dependencies and virtual environments. Also included is a Make file to set-up your development environment. To set-up your development environment, follow these steps:
 
-First, create a repository on GitHub with the same name as this project, and then run the following commands:
+1. Clone the repository
 
-``` bash
-git init -b main
-git add .
-git commit -m "init commit"
-git remote add origin git@github.com:dbarrous/CDFTracker.git
-git push -u origin main
-```
+    ```bash
+    git clone https://github.com/HERMES-SOC/CDFTracker.git
 
-Finally, install the environment and the pre-commit hooks with 
+    cd CDFTracker
+    ```
 
-```bash
-make install
-```
+2. Set-up your development environment
 
-You are now ready to start development on your project! The CI/CD
-pipeline will be triggered when you open a pull request, merge to main,
-or when you create a new release.
+    ```bash
+    make install
+    ```
 
-To finalize the set-up for publishing to PyPi or Artifactory, see
-[here](https://fpgmaas.github.io/cookiecutter-poetry/features/publishing/#set-up-for-pypi).
-For activating the automatic documentation with MkDocs, see
-[here](https://fpgmaas.github.io/cookiecutter-poetry/features/mkdocs/#enabling-the-documentation-on-github).
-To enable the code coverage reports, see [here](https://fpgmaas.github.io/cookiecutter-poetry/features/codecov/).
-
-## Releasing a new version
+3. Code away!
 
 
+## How to run tests
+This project uses [pytest](https://docs.pytest.org/en/stable/) to run tests. To run tests, follow these steps:
 
----
+1. Inside the project directory, run the following command:
 
-Repository initiated with [fpgmaas/cookiecutter-poetry](https://github.com/fpgmaas/cookiecutter-poetry).
+    ```bash
+    pytest 
+    ```
