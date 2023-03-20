@@ -1332,18 +1332,6 @@ slack = ["slack-sdk"]
 telegram = ["requests"]
 
 [[package]]
-name = "types-sqlalchemy"
-version = "1.4.53.34"
-description = "Typing stubs for SQLAlchemy"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "types-SQLAlchemy-1.4.53.34.tar.gz", hash = "sha256:b446a085075fb2736a04db91f2cb3845298a8412cd572b490b52f64435e3d18f"},
-    {file = "types_SQLAlchemy-1.4.53.34-py3-none-any.whl", hash = "sha256:b806437a27164842fffcae3a1c28d81f7574537df5e001774fe15a49a3e9fe4a"},
-]
-
-[[package]]
 name = "typing-extensions"
 version = "4.5.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
@@ -1467,4 +1455,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "764a1957ba9421051214ed555f857261e33eadaffb7b89af0f7b584ce7b46d0c"
+content-hash = "f0be8dac98745ae1cccf843986bebfc3992faee5b8c0c6d3c9511caadbb5e1b8"
