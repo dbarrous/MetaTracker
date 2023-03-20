@@ -9,7 +9,6 @@
 This is a python package that helps keep track of both Raw Binary and CDF Files in a Relational Database.
 
 - **Github repository**: <https://github.com/dbarrous/CDFTracker/>
-- **Documentation** <https://dbarrous.github.io/CDFTracker/>
 
 ## How to set-up Development Environment
 This project makes use of [Poetry](https://python-poetry.org/) to manage dependencies and virtual environments. Also included is a Make file to set-up your development environment. To set-up your development environment, follow these steps:
