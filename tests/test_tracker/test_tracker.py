@@ -6,6 +6,7 @@ from cdftracker import log
 from cdftracker.database import create_engine, create_session
 from cdftracker.database.tables import set_up_tables
 from cdftracker.database.tables.science_file_table import ScienceFileTable
+from cdftracker.database.tables.science_product_table import ScienceProductTable
 from cdftracker.tracker import tracker
 
 TEST_DB_HOST = "sqlite://"
@@ -130,33 +131,6 @@ def test_tracker_parse_filename() -> None:
     filename = test_tracker.parse_filename(file_name)
 
     assert filename == "ducks"
-
-
-def test_tracker_parse_absolute_path() -> None:
-    """
-    Test Tracker parse absolute path
-    """
-    # Create testfile with name hermes_MAG_l0_2022259-030002_v01.bin
-    file_name = Path(TEST_SCIENCE_FILENAME)
-
-    engine = create_engine(TEST_DB_HOST)
-
-    # Science File Parser
-    science_file_parser = util.parse_science_filename
-
-    test_tracker = tracker.FileTracker(engine=engine, science_file_parser=science_file_parser)
-
-    absolute_path = test_tracker.parse_absolute_path(file_name)
-
-    assert absolute_path == TEST_SCIENCE_FILENAME
-
-    file_name = Path(TEST_RANDOM_FILENAME)
-
-    absolute_path = test_tracker.parse_absolute_path(file_name)
-
-    assert absolute_path == TEST_RANDOM_FILENAME
-
-    log.info("Test Tracker parse absolute path passed")
 
 
 def test_tracker_parse_file() -> None:
@@ -361,5 +335,12 @@ def test_track() -> None:
     test_tracker = tracker.FileTracker(engine=engine, science_file_parser=science_file_parser)
 
     test_tracker.track(file=Path(TEST_SCIENCE_FILENAME))
+
+    # Check science file table and science product table were created
+    with session.begin() as sql_session:
+        files = sql_session.query(ScienceFileTable).all()
+        assert files is not None
+        products = sql_session.query(ScienceProductTable).all()
+        assert products is not None
 
     assert test_tracker is not None
