@@ -164,7 +164,11 @@ def populate_file_level_table(sql_session: type, file_levels: list, file_level_t
             if session.query(file_level_table).filter_by(short_name=file_level["short_name"]).first() is None:
                 log.info(f"Adding {file_level['short_name']} to File Level Table")
                 session.add(
-                    file_level_table(file_level["full_name"], file_level["short_name"], file_level["description"])
+                    file_level_table(
+                        full_name=file_level["full_name"],
+                        short_name=file_level["short_name"],
+                        description=file_level["description"],
+                    )
                 )
             else:
                 log.info(f"{file_level['short_name']} already exists in File Level Table")
@@ -188,7 +192,14 @@ def populate_file_type_table(sql_session: type, file_types: list, file_level_tab
         with sql_session.begin() as session:
             if session.query(file_level_table).filter_by(short_name=file_type["short_name"]).first() is None:
                 log.info(f"Adding {file_type['short_name']} to File Type Table")
-                session.add(file_level_table(file_type["short_name"], file_type["full_name"], file_type["description"]))
+                session.add(
+                    file_level_table(
+                        short_name=file_type["short_name"],
+                        full_name=file_type["full_name"],
+                        description=file_type["description"],
+                        extension=file_type["extension"],
+                    )
+                )
             else:
                 log.info(f"{file_type['short_name']} already exists in File Type Table")
 
@@ -213,10 +224,10 @@ def populate_instrument_table(sql_session: type, instruments: list, instrument_t
                 log.info(f"Adding {instrument['short_name']} to Instrument Table")
                 session.add(
                     instrument_table(
-                        instrument["instrument_id"],
-                        instrument["short_name"],
-                        instrument["full_name"],
-                        instrument["description"],
+                        instrument_id=instrument["instrument_id"],
+                        short_name=instrument["short_name"],
+                        full_name=instrument["full_name"],
+                        description=instrument["description"],
                     )
                 )
             else:

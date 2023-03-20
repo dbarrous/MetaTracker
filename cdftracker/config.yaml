@@ -40,9 +40,11 @@ file_types:
 - description: Raw Binary File
   full_name: Raw Binary
   short_name: raw
+  extension: .bin
 - description: Common Data Format File
   full_name: Common Data Format
   short_name: cdf
+  extension: .cdf
 
 
 # Instrument Configurations

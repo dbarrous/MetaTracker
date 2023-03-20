@@ -24,13 +24,17 @@ class FileTypeTable(Base.Base):
     # Description Of File Type
     description = Column(String)
 
-    def __init__(self, short_name: str, full_name: str, description: str) -> None:
+    # Extension Of File Type
+    extension = Column(String)
+
+    def __init__(self, short_name: str, full_name: str, description: str, extension: str) -> None:
         """
         Constructor for File Type Table
         """
         self.short_name = short_name
         self.full_name = full_name
         self.description = description
+        self.extension = extension
 
     def __repr__(self) -> str:
         return super().__repr__()
