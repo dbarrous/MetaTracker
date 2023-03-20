@@ -16,6 +16,9 @@ __pycache__/
 # Ruff Cache
 .ruff_cache/
 
+# Remove hermes
+*.bin
+
 # Distribution / packaging
 .Python
 build/
