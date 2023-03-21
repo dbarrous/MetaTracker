@@ -1,7 +1,7 @@
 # CDFTracker
 
 
-[![GitHub issues](https://img.shields.io/github/issues/HERMES-SOC/CDFTracker)](
+![GitHub issues](https://img.shields.io/github/issues/HERMES-SOC/CDFTracker)
 [![Build status](https://img.shields.io/github/actions/workflow/status/HERMES-SOC/CDFTracker/main.yml?branch=main)](https://github.com/HERMES-SOC/CDFTracker/actions/workflows/main.yml?query=branch%3Amain)
 [![codecov](https://codecov.io/gh/HERMES-SOC/CDFTracker/branch/main/graph/badge.svg)](https://codecov.io/gh/HERMES-SOC/CDFTracker)
 [![Commit activity](https://img.shields.io/github/commit-activity/m/HERMES-SOC/CDFTracker)](https://img.shields.io/github/commit-activity/m/HERMES-SOC/CDFTracker)
