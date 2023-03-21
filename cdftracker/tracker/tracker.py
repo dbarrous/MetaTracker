@@ -12,7 +12,7 @@ from cdftracker.database.tables.science_file_table import ScienceFileTable
 from cdftracker.database.tables.science_product_table import ScienceProductTable
 
 
-class FileTracker:
+class CDFTracker:
     def __init__(self, engine, science_file_parser: Callable):
         self.engine = engine
 

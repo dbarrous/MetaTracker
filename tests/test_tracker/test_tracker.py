@@ -28,7 +28,7 @@ def test_tracker() -> None:
     # Science File Parser
     science_file_parser = util.parse_science_filename
 
-    test_tracker = tracker.FileTracker(engine=engine, science_file_parser=science_file_parser)
+    test_tracker = tracker.CDFTracker(engine=engine, science_file_parser=science_file_parser)
 
     assert test_tracker is not None
 
@@ -39,7 +39,7 @@ def test_tracker() -> None:
     science_file_parser = util.parse_science_filename
 
     try:
-        test_tracker = tracker.FileTracker(engine=engine, science_file_parser=science_file_parser)
+        test_tracker = tracker.CDFTracker(engine=engine, science_file_parser=science_file_parser)
     except Exception as e:
         assert isinstance(e, ConnectionError)
 
@@ -56,7 +56,7 @@ def test_tracker_parse_extension() -> None:
     # Science File Parser
     science_file_parser = util.parse_science_filename
 
-    test_tracker = tracker.FileTracker(engine, science_file_parser=science_file_parser)
+    test_tracker = tracker.CDFTracker(engine, science_file_parser=science_file_parser)
 
     extension = test_tracker.parse_extension(file_name)
 
@@ -92,7 +92,7 @@ def test_tracker_is_valid_file_type() -> None:
     # Science File Parser
     science_file_parser = util.parse_science_filename
 
-    test_tracker = tracker.FileTracker(engine=engine, science_file_parser=science_file_parser)
+    test_tracker = tracker.CDFTracker(engine=engine, science_file_parser=science_file_parser)
 
     extension = test_tracker.parse_extension(test_good_file)
 
@@ -101,7 +101,7 @@ def test_tracker_is_valid_file_type() -> None:
     # Create testfile with name hermes_MAG_l0_2022259-030002_v01.bin
     test_bad_file = Path(TEST_BAD_SCIENCE_FILENAME)
 
-    test_tracker = tracker.FileTracker(engine=engine, science_file_parser=science_file_parser)
+    test_tracker = tracker.CDFTracker(engine=engine, science_file_parser=science_file_parser)
 
     extension = test_tracker.parse_extension(test_bad_file)
 
@@ -120,7 +120,7 @@ def test_tracker_parse_filename() -> None:
     # Science File Parser
     science_file_parser = util.parse_science_filename
 
-    test_tracker = tracker.FileTracker(engine=engine, science_file_parser=science_file_parser)
+    test_tracker = tracker.CDFTracker(engine=engine, science_file_parser=science_file_parser)
 
     filename = test_tracker.parse_filename(file_name)
 
@@ -153,7 +153,7 @@ def test_tracker_parse_file() -> None:
 
     science_file_parser = util.parse_science_filename
 
-    test_tracker = tracker.FileTracker(engine=engine, science_file_parser=science_file_parser)
+    test_tracker = tracker.CDFTracker(engine=engine, science_file_parser=science_file_parser)
 
     file = test_tracker.parse_file(session, file_name)
 
@@ -183,7 +183,7 @@ def test_tracker_parse_science_file() -> None:
     # Science File Parser
     science_file_parser = util.parse_science_filename
 
-    test_tracker = tracker.FileTracker(engine=engine, science_file_parser=science_file_parser)
+    test_tracker = tracker.CDFTracker(engine=engine, science_file_parser=science_file_parser)
 
     science_file = test_tracker.parse_science_file_data(file=test_file)
 
@@ -207,7 +207,7 @@ def test_track_is_valid_instrument() -> None:
     # Science File Parser
     science_file_parser = util.parse_science_filename
 
-    test_tracker = tracker.FileTracker(engine=engine, science_file_parser=science_file_parser)
+    test_tracker = tracker.CDFTracker(engine=engine, science_file_parser=science_file_parser)
 
     instrument = test_tracker.parse_science_file_data(file=test_file)["instrument"]
 
@@ -216,7 +216,7 @@ def test_track_is_valid_instrument() -> None:
     # Create testfile with name hermes_MAG_l0_2022259-030002_v01.bin
     test_file = Path(TEST_BAD_SCIENCE_FILENAME)
 
-    test_tracker = tracker.FileTracker(engine=engine, science_file_parser=science_file_parser)
+    test_tracker = tracker.CDFTracker(engine=engine, science_file_parser=science_file_parser)
 
     try:
         instrument = test_tracker.parse_science_file_data(file=test_file)["instrument"]
@@ -238,7 +238,7 @@ def test_get_instruments() -> None:
     # Science File Parser
     science_file_parser = util.parse_science_filename
 
-    test_tracker = tracker.FileTracker(engine=engine, science_file_parser=science_file_parser)
+    test_tracker = tracker.CDFTracker(engine=engine, science_file_parser=science_file_parser)
 
     instruments = test_tracker.get_instruments(session=session)
 
@@ -260,7 +260,7 @@ def test_get_instrument_configurations() -> None:
     # Science File Parser
     science_file_parser = util.parse_science_filename
 
-    test_tracker = tracker.FileTracker(engine=engine, science_file_parser=science_file_parser)
+    test_tracker = tracker.CDFTracker(engine=engine, science_file_parser=science_file_parser)
 
     instrument_configurations = test_tracker.get_instrument_configurations(session=session)
 
@@ -286,7 +286,7 @@ def test_get_instrument_by_id() -> None:
     # Science File Parser
     science_file_parser = util.parse_science_filename
 
-    test_tracker = tracker.FileTracker(engine=engine, science_file_parser=science_file_parser)
+    test_tracker = tracker.CDFTracker(engine=engine, science_file_parser=science_file_parser)
 
     instrument = test_tracker.get_instrument_by_id(session=session, instrument_id=1)
 
@@ -308,7 +308,7 @@ def test_map_instrument_list() -> None:
     # Science File Parser
     science_file_parser = util.parse_science_filename
 
-    test_tracker = tracker.FileTracker(engine=engine, science_file_parser=science_file_parser)
+    test_tracker = tracker.CDFTracker(engine=engine, science_file_parser=science_file_parser)
 
     instrument_list = test_tracker.get_instruments(session=session)
 
@@ -332,7 +332,7 @@ def test_track() -> None:
     # Science File Parser
     science_file_parser = util.parse_science_filename
 
-    test_tracker = tracker.FileTracker(engine=engine, science_file_parser=science_file_parser)
+    test_tracker = tracker.CDFTracker(engine=engine, science_file_parser=science_file_parser)
 
     test_tracker.track(file=Path(TEST_SCIENCE_FILENAME))
 
