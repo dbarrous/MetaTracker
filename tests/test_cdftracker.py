@@ -1,6 +1,6 @@
 import logging
 
-from cdftracker import load_config, log
+from cdftracker import get_config, log, set_config
 
 
 def test_log() -> None:
@@ -18,23 +18,29 @@ def test_log() -> None:
     assert len(log.handlers) > 0
 
 
-def test_load_config() -> None:
+# Test set_config
+def test_set_config() -> None:
     """
-    Test load_config
+    Test set_config
     """
 
-    default_config = load_config()
+    config = get_config()
 
-    log.info(default_config)
+    # Check if config is set
+    assert config is not None
 
-    assert default_config is not None
+    test_db_host = "test"
 
-    assert len(default_config.keys()) == 6
+    # Set config
+    set_config({"db_host": test_db_host})
 
-    new_value_config = load_config({"mission_name": "test"})
+    config = get_config()
 
-    assert new_value_config is not None
+    # Check if config is set
+    assert config is not None
 
-    assert len(new_value_config.keys()) == 6
+    # Check if config is set correctly
+    assert config.db_host == test_db_host
 
-    assert new_value_config["mission_name"] == "test"
+    # Test String Representation
+    print(config)

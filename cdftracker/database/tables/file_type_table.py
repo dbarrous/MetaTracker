@@ -6,14 +6,14 @@
 
 from sqlalchemy import Column, String
 
-from cdftracker import MISSION_NAME
+from cdftracker import CONFIGURATION
 
 from . import base_table as Base
 
 
 class FileTypeTable(Base.Base):
     # Name Of Table
-    __tablename__ = f"{MISSION_NAME}_file_type"
+    __tablename__ = f"{CONFIGURATION.mission_name}_file_type"
 
     # Short Name Of File Type
     short_name = Column(String, primary_key=True)

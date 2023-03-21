@@ -5,7 +5,7 @@ Setup Tables
 
 from sqlalchemy import inspect
 
-from cdftracker import FILE_LEVELS, FILE_TYPES, INSTRUMENT_CONFIGURATIONS, INSTRUMENTS, log
+from cdftracker import CONFIGURATION, log
 
 from . import file_level_table as FileLevelTable
 from . import file_type_table as FileTypeTable
@@ -313,13 +313,13 @@ def set_up_tables(engine: type, session: type) -> None:
         create_table(engine, table_class)
 
         if get_class_name(table_class) == "FileLevelTable":
-            populate_file_level_table(session, FILE_LEVELS, table_class)
+            populate_file_level_table(session, CONFIGURATION.file_levels, table_class)
 
         elif get_class_name(table_class) == "FileTypeTable":
-            populate_file_type_table(session, FILE_TYPES, table_class)
+            populate_file_type_table(session, CONFIGURATION.file_types, table_class)
 
         elif get_class_name(table_class) == "InstrumentTable":
-            populate_instrument_table(session, INSTRUMENTS, table_class)
+            populate_instrument_table(session, CONFIGURATION.instruments, table_class)
 
         elif get_class_name(table_class) == "InstrumentConfigurationTable":
-            populate_instrument_configuration_table(session, INSTRUMENT_CONFIGURATIONS, table_class)
+            populate_instrument_configuration_table(session, CONFIGURATION.instrument_configurations, table_class)

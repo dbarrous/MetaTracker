@@ -7,14 +7,14 @@
 
 from sqlalchemy import Column, Integer, String
 
-from cdftracker import MISSION_NAME
+from cdftracker import CONFIGURATION
 
 from . import base_table as Base
 
 
 class InstrumentTable(Base.Base):
     # Name Of Table
-    __tablename__ = f"{MISSION_NAME}_instrument"
+    __tablename__ = f"{CONFIGURATION.mission_name}_instrument"
 
     # ID Of Instrument (Primary Key)
     instrument_id = Column(Integer, primary_key=True)

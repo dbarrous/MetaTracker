@@ -1,9 +1,11 @@
 from sqlalchemy import Column, Integer
 from sqlalchemy.orm import declarative_base
 
-from cdftracker import MISSION_NAME
+from cdftracker import CONFIGURATION
 from cdftracker.database import create_engine, create_session
 from cdftracker.database.tables import create_table, get_columns, get_tables, set_up_tables
+
+MISSION_NAME = CONFIGURATION.mission_name
 
 
 def test_get_tables():

@@ -6,14 +6,14 @@
 
 from sqlalchemy import Column, String
 
-from cdftracker import MISSION_NAME
+from cdftracker import CONFIGURATION
 
 from . import base_table as Base
 
 
 class FileLevelTable(Base.Base):
     # Name Of Table
-    __tablename__ = f"{MISSION_NAME}_file_level"
+    __tablename__ = f"{CONFIGURATION.mission_name}_file_level"
 
     # Short Name Of File Level
     short_name = Column(String, primary_key=True)
@@ -28,6 +28,7 @@ class FileLevelTable(Base.Base):
         """
         Constructor for File Level Table
         """
+
         self.full_name = full_name
         self.short_name = short_name
         self.description = description

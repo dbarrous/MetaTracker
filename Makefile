@@ -1,5 +1,10 @@
-.PHONY: install
-install: ## Install the poetry environment and install the pre-commit hooks
+.PHONY : help
+help: ## Show this help.
+	@awk 'BEGIN {FS = ":.*?## "}; /^[a-zA-Z_-]+:.*?## .*$$/ {printf "\033[36m%-20s\033[0m %s
+
+
+.PHONY: run
+run: ## Install the poetry environment and install the pre-commit hooks
 	@echo "🚀 Creating virtual environment using pyenv and poetry"
 	@poetry install	
 	@ poetry run pre-commit install
@@ -17,9 +22,11 @@ check: ## Run code quality tools.
 	@poetry run deptry .
 
 .PHONY: test
-test: ## Test the code with pytest
+test: ## Test the code with pytest and open the coverage report in the browser.
 	@echo "🚀 Testing code: Running pytest"
-	@poetry run pytest --cov --cov-config=pyproject.toml --cov-report=xml
+	@poetry run pytest --cov --cov-config=pyproject.toml --cov-report=html
+	@echo "🚀 Opening coverage report in browser"
+	@xdg-open htmlcov/index.html
 
 .PHONY: build
 build: clean-build ## Build wheel file using poetry

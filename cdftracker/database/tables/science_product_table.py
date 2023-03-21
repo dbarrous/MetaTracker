@@ -9,20 +9,20 @@ from datetime import datetime
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 
-from cdftracker import MISSION_NAME
+from cdftracker import CONFIGURATION
 
 from . import base_table as Base
 
 
 class ScienceProductTable(Base.Base):
-    __tablename__ = f"{MISSION_NAME}_science_product"
+    __tablename__ = f"{CONFIGURATION.mission_name}_science_product"
 
     # ID Of Science Product (Primary Key)
     science_product_id = Column(Integer, primary_key=True, autoincrement=True)
 
     # ID Of Instrument Configuration (Foreign Key)
     instrument_configuration_id = Column(
-        Integer, ForeignKey(f"{MISSION_NAME}_instrument_configuration.instrument_configuration_id")
+        Integer, ForeignKey(f"{CONFIGURATION.mission_name}_instrument_configuration.instrument_configuration_id")
     )
 
     # Mode Of Science Product

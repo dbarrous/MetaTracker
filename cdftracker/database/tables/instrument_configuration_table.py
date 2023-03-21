@@ -5,16 +5,16 @@
 
 from sqlalchemy import Column, Integer
 
-from cdftracker import INSTRUMENTS, MISSION_NAME
+from cdftracker import CONFIGURATION
 
 from . import base_table as Base
 
 table_dict = {
-    "__tablename__": f"{MISSION_NAME}_instrument_configuration",
+    "__tablename__": f"{CONFIGURATION.mission_name}_instrument_configuration",
     "instrument_configuration_id": Column(Integer, primary_key=True),
 }
 
-for i in range(len(INSTRUMENTS)):
+for i in range(len(CONFIGURATION.instruments)):
     table_dict[f"instrument_{i+1}_id"] = Column(Integer)
 
 InstrumentConfigurationTable = type("InstrumentConfigurationTable", (Base.Base,), table_dict)
