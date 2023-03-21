@@ -39,6 +39,7 @@ To install the library and its dependencies, follow these steps:
     ```python
     from cdftracker.database import create_engine, create_session
 
+    # Create a database engine and session
     engine = create_engine("sqlite:///test.db")
     session = create_session(engine)
     ```
@@ -47,6 +48,7 @@ To install the library and its dependencies, follow these steps:
     ```python
     from cdftracker.database.tables import set_up_tables
 
+    # Set up tables
     set_up_tables(engine, session)
     ```
 
@@ -62,17 +64,28 @@ To install the library and its dependencies, follow these steps:
       #      "version": str,
       #      "descriptor": str,
     #    }
+    
+    # For this example we will be using a predefined science file parser defined in the 
+    # hermes_core package (https://github.com/HERMES-SOC/hermes_core.git).
+    from hermes_core.util import util
+
+    parser = util.parse_science_filename
     ```
 5. Now you can instantiate a `CDFTracker` object with the engine and science file parser function you defined:
     ```python
-    from cdftracker import CDFTracker
+    from cdftracker.tracker import tracker
+    from pathlib import Path
 
-    tracker = CDFTracker(engine, science_file_parser)
-    tracker.track_file("path/to/file")
+    # Instantiate the tracker
+    tracker = tracker.CDFTracker(engine, parser)
+
+    # Path of the science file to be tracked (for example)
+    file = Path("./hermes_MAG_l0_2022259-030002_v01.bin")
     ```
 6. You can also `track` the file which adds the appropriate entries to the database. To do so, run the following command:
     ```python
-    tracker.track("path/to/file")
+    # Track the file
+    tracker.track(file)
     ```
 
 ## Database Schema
