@@ -42,8 +42,8 @@ def get_table_modules() -> list:
         FileLevelTable,
         FileTypeTable,
         InstrumentTable,
-        ScienceProductTable,
         InstrumentConfigurationTable,
+        ScienceProductTable,
         ScienceFileTable,
     ]
 
