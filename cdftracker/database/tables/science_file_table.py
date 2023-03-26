@@ -27,6 +27,9 @@ class ScienceFileTable(Base.Base):
     # Name Of Table
     __tablename__ = f"{CONFIGURATION.mission_name}_science_file"
 
+    # ID Of Science Product (Primary Key)
+    science_product_id = Column(Integer, primary_key=True, autoincrement=True)
+
     # ID Of Science Product (Foreign Key)
     science_product_id = Column(Integer, ForeignKey(f"{CONFIGURATION.mission_name}_science_product.science_product_id"))
 
@@ -37,7 +40,7 @@ class ScienceFileTable(Base.Base):
     file_level = Column(String, ForeignKey(f"{CONFIGURATION.mission_name}_file_level.short_name"))
 
     # Filename Of Science File
-    filename = Column(String, primary_key=True, unique=True)
+    filename = Column(String, unique=True)
 
     # File Version Of Science File
     file_version = Column(Integer)
