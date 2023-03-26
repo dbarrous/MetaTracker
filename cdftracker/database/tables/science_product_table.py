@@ -8,6 +8,7 @@
 from datetime import datetime
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 
 from cdftracker import CONFIGURATION
 
@@ -30,6 +31,8 @@ class ScienceProductTable(Base.Base):
 
     # Reference Timestamp Of Science Product
     reference_timestamp = Column(DateTime)
+
+    children = relationship("ScienceFileTable", back_populates="parent", cascade="all, delete")
 
     def __init__(self, instrument_configuration_id: int, mode: str, reference_timestamp: datetime) -> None:
         """

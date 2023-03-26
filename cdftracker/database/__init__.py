@@ -47,3 +47,6 @@ def create_session(engine: type) -> type:
 
     session = sessionmaker(bind=engine)
     return session
+
+
+# Function to create a database

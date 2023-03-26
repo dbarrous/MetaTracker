@@ -3,7 +3,7 @@
 #   instrument_configuration_id: int (primary key)
 #   instrument_{i+1}_id: int (foreign key)
 
-from sqlalchemy import Column, Integer
+from sqlalchemy import Column, ForeignKey, Integer
 
 from cdftracker import CONFIGURATION
 
@@ -15,7 +15,9 @@ table_dict = {
 }
 
 for i in range(len(CONFIGURATION.instruments)):
-    table_dict[f"instrument_{i+1}_id"] = Column(Integer)
+    table_dict[f"instrument_{i+1}_id"] = Column(
+        Integer, ForeignKey(f"{CONFIGURATION.mission_name}_instrument.instrument_id")
+    )
 
 InstrumentConfigurationTable = type("InstrumentConfigurationTable", (Base.Base,), table_dict)
 

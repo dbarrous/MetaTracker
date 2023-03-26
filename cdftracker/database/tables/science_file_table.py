@@ -16,6 +16,7 @@
 from datetime import datetime
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 
 from cdftracker import CONFIGURATION
 
@@ -26,7 +27,7 @@ class ScienceFileTable(Base.Base):
     # Name Of Table
     __tablename__ = f"{CONFIGURATION.mission_name}_science_file"
 
-    # ID Of Science File (Primary Key)
+    # ID Of Science Product (Primary Key)
     science_file_id = Column(Integer, primary_key=True, autoincrement=True)
 
     # ID Of Science Product (Foreign Key)
@@ -39,10 +40,10 @@ class ScienceFileTable(Base.Base):
     file_level = Column(String, ForeignKey(f"{CONFIGURATION.mission_name}_file_level.short_name"))
 
     # Filename Of Science File
-    filename = Column(String)
+    filename = Column(String, unique=True)
 
     # File Version Of Science File
-    file_version = Column(Integer)
+    file_version = Column(String)
 
     # File Extension Of Science File
     file_extension = Column(String)
@@ -58,6 +59,8 @@ class ScienceFileTable(Base.Base):
 
     # Is Public Of Science File
     is_public = Column(Boolean)
+
+    parent = relationship("ScienceProductTable", back_populates="children")
 
     def __init__(
         self,

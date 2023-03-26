@@ -25,19 +25,19 @@ class CDFTracker:
 
     def track(self, file: Path) -> dict:
         """Track a file"""
+        if not self.is_file_real(file):
+            log.info("File does not exist")
+            raise FileNotFoundError("File does not exist")
         session = create_session(self.engine)
 
         parsed_file = self.parse_file(session, file)
         parsed_science_product = self.parse_science_product(session, file)
-        log.info(parsed_file)
-        log.info(parsed_science_product)
 
         science_product_id = self.add_to_science_product_table(
             session=session, parsed_science_product=parsed_science_product
         )
         # Add to science file table
         log.info("Added to Science Product Table")
-        log.info(science_product_id)
         self.add_to_science_file_table(session=session, parsed_file=parsed_file, science_product_id=science_product_id)
         log.info("Added to Science File Table")
 
@@ -45,6 +45,27 @@ class CDFTracker:
         """Add a file to the file table"""
 
         with session.begin() as sql_session:
+            # Check if file exists with same filepath
+            file = (
+                sql_session.query(ScienceFileTable)
+                .filter(ScienceFileTable.file_path == parsed_file["file_path"])
+                .first()
+            )
+
+            # If file exists, update it
+            if file:
+                file.file_type = parsed_file["file_type"]
+                file.file_level = parsed_file["file_level"]
+                file.filename = parsed_file["filename"]
+                file.file_version = parsed_file["file_version"]
+                file.file_size = parsed_file["file_size"]
+                file.file_extension = parsed_file["file_extension"]
+                file.file_path = parsed_file["file_path"]
+                file.file_modified_timestamp = parsed_file["file_modified_timestamp"]
+                file.is_public = parsed_file["is_public"]
+                return
+
+            # Try to add file to database if it doesn't exist already if it does, update it
             file = ScienceFileTable(
                 science_product_id=science_product_id,
                 file_type=parsed_file["file_type"],
@@ -61,6 +82,24 @@ class CDFTracker:
 
     def add_to_science_product_table(self, session: type, parsed_science_product: dict):
         sess = session()
+
+        # Check if science product exists with same instrument configuration id, mode, and reference timestamp
+        science_product = (
+            sess.query(ScienceProductTable)
+            .filter(
+                ScienceProductTable.instrument_configuration_id
+                == parsed_science_product["instrument_configuration_id"],
+                ScienceProductTable.mode == parsed_science_product["mode"],
+                ScienceProductTable.reference_timestamp == parsed_science_product["reference_timestamp"],
+            )
+            .first()
+        )
+
+        # If science product exists, return science product id
+        if science_product:
+            return science_product.science_product_id
+
+        # If science product doesn't exist, add it to the database
         science_product = ScienceProductTable(
             instrument_configuration_id=parsed_science_product["instrument_configuration_id"],
             mode=parsed_science_product["mode"],
@@ -68,6 +107,7 @@ class CDFTracker:
         )
         sess.add(science_product)
         sess.commit()
+
         # return science product id that was just added
         return science_product.science_product_id
 
@@ -107,7 +147,6 @@ class CDFTracker:
                 return {}
 
             science_file_data = self.parse_science_file_data(file)
-            log.info(science_file_data)
 
             if not self.is_valid_file_level(session=session, file_level=science_file_data["level"]):
                 log.info("File level is not valid")
@@ -130,7 +169,6 @@ class CDFTracker:
     def parse_science_product(self, session, file: Path) -> dict:
         if self.is_file_real(file):
             science_product_data = self.parse_science_file_data(file)
-            log.info(science_product_data)
 
             if not self.is_valid_timestamp(science_product_data["time"]):
                 log.info("Timestamp is not valid")
@@ -144,7 +182,6 @@ class CDFTracker:
                 return {}
 
             config = self.get_instrument_configurations(session=session)
-            log.info(config)
 
             if [science_product_data["instrument"]] not in config.values():
                 log.info("Instrument configuration is not valid")
@@ -172,7 +209,6 @@ class CDFTracker:
         with session.begin() as sql_session:
             instruments = sql_session.query(InstrumentTable).all()
             valid_instrument_short_names = [instrument.short_name for instrument in instruments]
-            log.info(valid_instrument_short_names)
 
             return instrument_short_name in valid_instrument_short_names
 
