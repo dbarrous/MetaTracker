@@ -340,8 +340,8 @@ def remove_all(engine: type) -> None:
     # Get Table Classes
     table_classes = get_table_classes(table_modules)
 
-    # Get Tables
-    get_tables_from_classes(table_classes)
+    # Reverse Table Classes
+    table_classes.reverse()
 
     # Remove Tables
     for table_class in table_classes:
