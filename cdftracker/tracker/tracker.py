@@ -45,8 +45,27 @@ class CDFTracker:
         """Add a file to the file table"""
 
         with session.begin() as sql_session:
-            # Try to add file to database if it doesn't exist already if it does, update it
+            # Check if file exists with same filepath
+            file = (
+                sql_session.query(ScienceFileTable)
+                .filter(ScienceFileTable.file_path == parsed_file["file_path"])
+                .first()
+            )
 
+            # If file exists, update it
+            if file:
+                file.file_type = parsed_file["file_type"]
+                file.file_level = parsed_file["file_level"]
+                file.filename = parsed_file["filename"]
+                file.file_version = parsed_file["file_version"]
+                file.file_size = parsed_file["file_size"]
+                file.file_extension = parsed_file["file_extension"]
+                file.file_path = parsed_file["file_path"]
+                file.file_modified_timestamp = parsed_file["file_modified_timestamp"]
+                file.is_public = parsed_file["is_public"]
+                return
+
+            # Try to add file to database if it doesn't exist already if it does, update it
             file = ScienceFileTable(
                 science_product_id=science_product_id,
                 file_type=parsed_file["file_type"],
@@ -63,6 +82,24 @@ class CDFTracker:
 
     def add_to_science_product_table(self, session: type, parsed_science_product: dict):
         sess = session()
+
+        # Check if science product exists with same instrument configuration id, mode, and reference timestamp
+        science_product = (
+            sess.query(ScienceProductTable)
+            .filter(
+                ScienceProductTable.instrument_configuration_id
+                == parsed_science_product["instrument_configuration_id"],
+                ScienceProductTable.mode == parsed_science_product["mode"],
+                ScienceProductTable.reference_timestamp == parsed_science_product["reference_timestamp"],
+            )
+            .first()
+        )
+
+        # If science product exists, return science product id
+        if science_product:
+            return science_product.science_product_id
+
+        # If science product doesn't exist, add it to the database
         science_product = ScienceProductTable(
             instrument_configuration_id=parsed_science_product["instrument_configuration_id"],
             mode=parsed_science_product["mode"],
@@ -70,6 +107,7 @@ class CDFTracker:
         )
         sess.add(science_product)
         sess.commit()
+
         # return science product id that was just added
         return science_product.science_product_id
 
