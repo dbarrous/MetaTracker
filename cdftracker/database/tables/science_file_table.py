@@ -16,6 +16,7 @@
 from datetime import datetime
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 
 from cdftracker import CONFIGURATION
 
@@ -55,6 +56,8 @@ class ScienceFileTable(Base.Base):
 
     # Is Public Of Science File
     is_public = Column(Boolean)
+
+    parent = relationship("ScienceProductTable", back_populates="children")
 
     def __init__(
         self,
