@@ -29,15 +29,12 @@ class CDFTracker:
 
         parsed_file = self.parse_file(session, file)
         parsed_science_product = self.parse_science_product(session, file)
-        log.info(parsed_file)
-        log.info(parsed_science_product)
 
         science_product_id = self.add_to_science_product_table(
             session=session, parsed_science_product=parsed_science_product
         )
         # Add to science file table
         log.info("Added to Science Product Table")
-        log.info(science_product_id)
         self.add_to_science_file_table(session=session, parsed_file=parsed_file, science_product_id=science_product_id)
         log.info("Added to Science File Table")
 
@@ -170,7 +167,6 @@ class CDFTracker:
     def parse_science_product(self, session, file: Path) -> dict:
         if self.is_file_real(file):
             science_product_data = self.parse_science_file_data(file)
-            log.info(science_product_data)
 
             if not self.is_valid_timestamp(science_product_data["time"]):
                 log.info("Timestamp is not valid")
@@ -184,7 +180,6 @@ class CDFTracker:
                 return {}
 
             config = self.get_instrument_configurations(session=session)
-            log.info(config)
 
             if [science_product_data["instrument"]] not in config.values():
                 log.info("Instrument configuration is not valid")
@@ -212,7 +207,6 @@ class CDFTracker:
         with session.begin() as sql_session:
             instruments = sql_session.query(InstrumentTable).all()
             valid_instrument_short_names = [instrument.short_name for instrument in instruments]
-            log.info(valid_instrument_short_names)
 
             return instrument_short_name in valid_instrument_short_names
 
