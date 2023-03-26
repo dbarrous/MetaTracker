@@ -25,6 +25,9 @@ class CDFTracker:
 
     def track(self, file: Path) -> dict:
         """Track a file"""
+        if not self.is_file_real(file):
+            log.info("File does not exist")
+            raise FileNotFoundError("File does not exist")
         session = create_session(self.engine)
 
         parsed_file = self.parse_file(session, file)
