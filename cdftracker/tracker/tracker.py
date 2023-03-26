@@ -45,6 +45,8 @@ class CDFTracker:
         """Add a file to the file table"""
 
         with session.begin() as sql_session:
+            # Try to add file to database if it doesn't exist already if it does, update it
+
             file = ScienceFileTable(
                 science_product_id=science_product_id,
                 file_type=parsed_file["file_type"],
