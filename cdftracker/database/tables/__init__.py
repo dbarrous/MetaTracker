@@ -325,7 +325,7 @@ def set_up_tables(engine: type, session: type) -> None:
             populate_instrument_configuration_table(session, CONFIGURATION.instrument_configurations, table_class)
 
 
-def remove_all(engine: type) -> None:
+def remove_all_tables(engine: type) -> None:
     """
     Remove all tables from the database
 
