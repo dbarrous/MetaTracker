@@ -43,7 +43,7 @@ class ScienceFileTable(Base.Base):
     filename = Column(String, unique=True)
 
     # File Version Of Science File
-    file_version = Column(Integer)
+    file_version = Column(String)
 
     # File Extension Of Science File
     file_extension = Column(String)

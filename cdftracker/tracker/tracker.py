@@ -144,7 +144,6 @@ class CDFTracker:
                 return {}
 
             science_file_data = self.parse_science_file_data(file)
-            log.info(science_file_data)
 
             if not self.is_valid_file_level(session=session, file_level=science_file_data["level"]):
                 log.info("File level is not valid")
