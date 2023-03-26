@@ -28,7 +28,7 @@ class ScienceFileTable(Base.Base):
     __tablename__ = f"{CONFIGURATION.mission_name}_science_file"
 
     # ID Of Science Product (Primary Key)
-    science_product_id = Column(Integer, primary_key=True, autoincrement=True)
+    science_file_id = Column(Integer, primary_key=True, autoincrement=True)
 
     # ID Of Science Product (Foreign Key)
     science_product_id = Column(Integer, ForeignKey(f"{CONFIGURATION.mission_name}_science_product.science_product_id"))

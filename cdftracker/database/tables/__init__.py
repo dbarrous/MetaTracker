@@ -323,3 +323,27 @@ def set_up_tables(engine: type, session: type) -> None:
 
         elif get_class_name(table_class) == "InstrumentConfigurationTable":
             populate_instrument_configuration_table(session, CONFIGURATION.instrument_configurations, table_class)
+
+
+def remove_all(engine: type) -> None:
+    """
+    Remove all tables from the database
+
+    :param engine: SQLAlchemy
+    :type engine: sqlalchemy.engine.base.Engine
+    :return: None
+    :rtype: None
+    """
+    # Get Table Modules
+    table_modules = get_table_modules()
+
+    # Get Table Classes
+    table_classes = get_table_classes(table_modules)
+
+    # Get Tables
+    get_tables_from_classes(table_classes)
+
+    # Remove Tables
+    for table_class in table_classes:
+        log.info(f"Removing {get_class_name(table_class)} Table")
+        table_class.__table__.drop(bind=engine, checkfirst=True)
