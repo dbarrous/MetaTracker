@@ -4,7 +4,7 @@ from hermes_core.util import util
 
 from cdftracker import log
 from cdftracker.database import create_engine, create_session
-from cdftracker.database.tables import set_up_tables
+from cdftracker.database.tables import create_tables
 from cdftracker.database.tables.science_file_table import ScienceFileTable
 from cdftracker.database.tables.science_product_table import ScienceProductTable
 from cdftracker.tracker import tracker
@@ -87,7 +87,7 @@ def test_tracker_is_valid_file_type() -> None:
     session = create_session(engine)
 
     # Set up tables
-    set_up_tables(engine=engine, session=session)
+    create_tables(engine=engine)
 
     # Science File Parser
     science_file_parser = util.parse_science_filename
@@ -149,7 +149,7 @@ def test_tracker_parse_file() -> None:
     session = create_session(engine)
     # Science File Parser
 
-    set_up_tables(engine=engine, session=session)
+    create_tables(engine=engine)
 
     science_file_parser = util.parse_science_filename
 
@@ -202,7 +202,7 @@ def test_track_is_valid_instrument() -> None:
 
     session = create_session(engine)
 
-    set_up_tables(engine=engine, session=session)
+    create_tables(engine=engine)
 
     # Science File Parser
     science_file_parser = util.parse_science_filename
@@ -233,7 +233,7 @@ def test_get_instruments() -> None:
 
     session = create_session(engine)
 
-    set_up_tables(engine=engine, session=session)
+    create_tables(engine=engine)
 
     # Science File Parser
     science_file_parser = util.parse_science_filename
@@ -255,7 +255,7 @@ def test_get_instrument_configurations() -> None:
 
     session = create_session(engine)
 
-    set_up_tables(engine=engine, session=session)
+    create_tables(engine=engine)
 
     # Science File Parser
     science_file_parser = util.parse_science_filename
@@ -281,7 +281,7 @@ def test_get_instrument_by_id() -> None:
 
     session = create_session(engine)
 
-    set_up_tables(engine=engine, session=session)
+    create_tables(engine=engine)
 
     # Science File Parser
     science_file_parser = util.parse_science_filename
@@ -303,7 +303,7 @@ def test_map_instrument_list() -> None:
 
     session = create_session(engine)
 
-    set_up_tables(engine=engine, session=session)
+    create_tables(engine=engine)
 
     # Science File Parser
     science_file_parser = util.parse_science_filename
@@ -327,7 +327,7 @@ def test_track() -> None:
 
     session = create_session(engine)
 
-    set_up_tables(engine=engine, session=session)
+    create_tables(engine=engine)
 
     # Science File Parser
     science_file_parser = util.parse_science_filename
