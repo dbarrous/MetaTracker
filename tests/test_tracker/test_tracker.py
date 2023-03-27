@@ -10,9 +10,9 @@ from cdftracker.database.tables.science_product_table import ScienceProductTable
 from cdftracker.tracker import tracker
 
 TEST_DB_HOST = "sqlite://"
-TEST_RANDOM_FILENAME = "./ducks.txt"
-TEST_SCIENCE_FILENAME = "./hermes_MAG_l0_2022259-030002_v01.bin"
-TEST_BAD_SCIENCE_FILENAME = "./hermes_MAG_2l_2022259-030002_v01.bin"
+TEST_RANDOM_FILENAME = "./tests/test_files/ducks.txt"
+TEST_SCIENCE_FILENAME = "./tests/test_files/hermes_MAG_l0_2022259-030002_v01.bin"
+TEST_BAD_SCIENCE_FILENAME = "./tests/test_files/hermes_MAG_2l_2022259-030002_v01.bin"
 TEST_NON_EXISTING_SCIENCE_FILENAME = "./hermes_MAG_l0_2022259-030002_v01.bop"
 TEST_INSTRUMENTS = [
     {"instrument_id": 1, "full_name": "MAG", "short_name": "mag", "description": "Magnetometer"},
