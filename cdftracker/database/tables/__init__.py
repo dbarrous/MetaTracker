@@ -330,6 +330,7 @@ def create_tables(engine: type) -> None:
             populate_instrument_configuration_table(session, CONFIGURATION.instrument_configurations, table_class)
 
 
+
 def remove_tables(engine: type) -> None:
     """
     Remove all tables from the database
