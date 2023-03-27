@@ -6,6 +6,7 @@ Setup Tables
 from sqlalchemy import inspect
 
 from cdftracker import CONFIGURATION, log
+from cdftracker.database import create_session
 
 from . import file_level_table as FileLevelTable
 from . import file_type_table as FileTypeTable
@@ -288,7 +289,7 @@ def create_table(engine: type, table_class: type) -> None:
     table_class.__table__.create(bind=engine, checkfirst=True)
 
 
-def set_up_tables(engine: type, session: type) -> None:
+def create_tables(engine: type) -> None:
     """
     Set up tables in the database if they don't exist and populate them
 
@@ -299,6 +300,10 @@ def set_up_tables(engine: type, session: type) -> None:
     :return: None
     :rtype: None
     """
+
+    # Create Session
+    session = create_session(engine)
+
     # Get Table Modules
     table_modules = get_table_modules()
 
@@ -325,7 +330,8 @@ def set_up_tables(engine: type, session: type) -> None:
             populate_instrument_configuration_table(session, CONFIGURATION.instrument_configurations, table_class)
 
 
-def remove_all_tables(engine: type) -> None:
+
+def remove_tables(engine: type) -> None:
     """
     Remove all tables from the database
 

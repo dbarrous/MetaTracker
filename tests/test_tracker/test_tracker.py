@@ -4,7 +4,7 @@ from hermes_core.util import util
 
 from cdftracker import log
 from cdftracker.database import create_engine, create_session
-from cdftracker.database.tables import set_up_tables
+from cdftracker.database.tables import create_tables
 from cdftracker.database.tables.science_file_table import ScienceFileTable
 from cdftracker.database.tables.science_product_table import ScienceProductTable
 from cdftracker.tracker import tracker
@@ -12,7 +12,8 @@ from cdftracker.tracker import tracker
 TEST_DB_HOST = "sqlite://"
 TEST_RANDOM_FILENAME = "./ducks.txt"
 TEST_SCIENCE_FILENAME = "./hermes_MAG_l0_2022259-030002_v01.bin"
-TEST_BAD_SCIENCE_FILENAME = "./hermes_MAG_l0_2022259-030002_v01.bop"
+TEST_BAD_SCIENCE_FILENAME = "./hermes_MAG_2l_2022259-030002_v01.bin"
+TEST_NON_EXISTING_SCIENCE_FILENAME = "./hermes_MAG_l0_2022259-030002_v01.bop"
 TEST_INSTRUMENTS = [
     {"instrument_id": 1, "full_name": "MAG", "short_name": "mag", "description": "Magnetometer"},
     {"instrument_id": 2, "full_name": "SIS", "short_name": "sis", "description": "Solar Wind Ion Spectrometer"},
@@ -68,7 +69,7 @@ def test_tracker_parse_extension() -> None:
 
     assert extension == ".txt"
 
-    file_name = Path(TEST_BAD_SCIENCE_FILENAME)
+    file_name = Path(TEST_NON_EXISTING_SCIENCE_FILENAME)
 
     extension = test_tracker.parse_extension(file_name)
 
@@ -87,7 +88,7 @@ def test_tracker_is_valid_file_type() -> None:
     session = create_session(engine)
 
     # Set up tables
-    set_up_tables(engine=engine, session=session)
+    create_tables(engine=engine)
 
     # Science File Parser
     science_file_parser = util.parse_science_filename
@@ -99,7 +100,7 @@ def test_tracker_is_valid_file_type() -> None:
     assert test_tracker.is_valid_file_type(session=session, extension=extension)
 
     # Create testfile with name hermes_MAG_l0_2022259-030002_v01.bin
-    test_bad_file = Path(TEST_BAD_SCIENCE_FILENAME)
+    test_bad_file = Path(TEST_NON_EXISTING_SCIENCE_FILENAME)
 
     test_tracker = tracker.CDFTracker(engine=engine, science_file_parser=science_file_parser)
 
@@ -149,7 +150,7 @@ def test_tracker_parse_file() -> None:
     session = create_session(engine)
     # Science File Parser
 
-    set_up_tables(engine=engine, session=session)
+    create_tables(engine=engine)
 
     science_file_parser = util.parse_science_filename
 
@@ -202,7 +203,7 @@ def test_track_is_valid_instrument() -> None:
 
     session = create_session(engine)
 
-    set_up_tables(engine=engine, session=session)
+    create_tables(engine=engine)
 
     # Science File Parser
     science_file_parser = util.parse_science_filename
@@ -214,7 +215,7 @@ def test_track_is_valid_instrument() -> None:
     assert test_tracker.is_valid_instrument(session=session, instrument_short_name=instrument)
 
     # Create testfile with name hermes_MAG_l0_2022259-030002_v01.bin
-    test_file = Path(TEST_BAD_SCIENCE_FILENAME)
+    test_file = Path(TEST_NON_EXISTING_SCIENCE_FILENAME)
 
     test_tracker = tracker.CDFTracker(engine=engine, science_file_parser=science_file_parser)
 
@@ -233,7 +234,7 @@ def test_get_instruments() -> None:
 
     session = create_session(engine)
 
-    set_up_tables(engine=engine, session=session)
+    create_tables(engine=engine)
 
     # Science File Parser
     science_file_parser = util.parse_science_filename
@@ -255,7 +256,7 @@ def test_get_instrument_configurations() -> None:
 
     session = create_session(engine)
 
-    set_up_tables(engine=engine, session=session)
+    create_tables(engine=engine)
 
     # Science File Parser
     science_file_parser = util.parse_science_filename
@@ -281,7 +282,7 @@ def test_get_instrument_by_id() -> None:
 
     session = create_session(engine)
 
-    set_up_tables(engine=engine, session=session)
+    create_tables(engine=engine)
 
     # Science File Parser
     science_file_parser = util.parse_science_filename
@@ -303,7 +304,7 @@ def test_map_instrument_list() -> None:
 
     session = create_session(engine)
 
-    set_up_tables(engine=engine, session=session)
+    create_tables(engine=engine)
 
     # Science File Parser
     science_file_parser = util.parse_science_filename
@@ -321,13 +322,11 @@ def test_map_instrument_list() -> None:
 
 def test_track() -> None:
     # Create testfile with name hermes_MAG_l0_2022259-030002_v01.bin
-    Path(TEST_SCIENCE_FILENAME)
-
     engine = create_engine(TEST_DB_HOST)
 
     session = create_session(engine)
 
-    set_up_tables(engine=engine, session=session)
+    create_tables(engine=engine)
 
     # Science File Parser
     science_file_parser = util.parse_science_filename
@@ -335,6 +334,13 @@ def test_track() -> None:
     test_tracker = tracker.CDFTracker(engine=engine, science_file_parser=science_file_parser)
 
     test_tracker.track(file=Path(TEST_SCIENCE_FILENAME))
+
+    # Test Non Existing File
+    try:
+        test_tracker.track(file=Path(TEST_NON_EXISTING_SCIENCE_FILENAME))
+
+    except FileNotFoundError as e:
+        assert e is not None
 
     # Check science file table and science product table were created
     with session.begin() as sql_session:
@@ -344,3 +350,20 @@ def test_track() -> None:
         assert products is not None
 
     assert test_tracker is not None
+
+    # Test duplicate file tracking (should not raise error but update timestamp)
+    test_tracker.track(file=Path(TEST_SCIENCE_FILENAME))
+
+    # Test bad file type
+    try:
+        test_tracker.track(file=Path(TEST_RANDOM_FILENAME))
+
+    except ValueError as e:
+        assert e is not None
+
+    # Test bad file name
+    try:
+        test_tracker.track(file=Path(TEST_BAD_SCIENCE_FILENAME))
+
+    except ValueError as e:
+        assert e is not None

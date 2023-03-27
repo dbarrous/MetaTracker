@@ -3,7 +3,7 @@ from sqlalchemy.orm import declarative_base
 
 from cdftracker import CONFIGURATION
 from cdftracker.database import create_engine, create_session
-from cdftracker.database.tables import create_table, get_columns, get_tables, set_up_tables
+from cdftracker.database.tables import create_table, create_tables, get_columns, get_tables, remove_tables, table_exists
 
 MISSION_NAME = CONFIGURATION.mission_name
 
@@ -94,13 +94,13 @@ def test_table_exists():
     assert "test_table" in created_tables
 
 
-def test_set_up_tables():
+def test_create_tables():
     # Create engine and session
     engine = create_engine("sqlite://")
-    session = create_session(engine)
+    create_session(engine)
 
     # Set up tables
-    set_up_tables(engine=engine, session=session)
+    create_tables(engine=engine)
 
     # Expected tables
     table_names = [
@@ -121,3 +121,69 @@ def test_set_up_tables():
 
     # Test expected tables and the returned tables are the same
     assert created_tables == table_names
+
+
+def test_create_tables_existing():
+    # Create engine and session
+    engine = create_engine("sqlite://")
+    create_session(engine)
+
+    # Set up tables
+    create_tables(engine=engine)
+
+    # Expected tables
+    table_names = [
+        f"{MISSION_NAME}_file_level",
+        f"{MISSION_NAME}_instrument_configuration",
+        f"{MISSION_NAME}_instrument",
+        f"{MISSION_NAME}_file_type",
+        f"{MISSION_NAME}_science_file",
+        f"{MISSION_NAME}_science_product",
+    ]
+
+    # Get tables
+    created_tables = get_tables(engine=engine)
+
+    # Sort the tables
+    table_names.sort()
+    created_tables.sort()
+
+    # Test expected tables and the returned tables are the same
+    assert created_tables == table_names
+
+    # Retry without error
+    create_tables(engine=engine)
+
+
+def test_remove_tables():
+    # Create engine and session
+    engine = create_engine("sqlite://")
+
+    # Set up tables
+    create_tables(engine=engine)
+
+    # Expected tables
+    table_names = [
+        f"{MISSION_NAME}_file_level",
+        f"{MISSION_NAME}_instrument_configuration",
+        f"{MISSION_NAME}_instrument",
+        f"{MISSION_NAME}_file_type",
+        f"{MISSION_NAME}_science_file",
+        f"{MISSION_NAME}_science_product",
+    ]
+
+    # Get tables
+    created_tables = get_tables(engine=engine)
+
+    # Sort the tables
+    table_names.sort()
+    created_tables.sort()
+
+    # Test expected tables and the returned tables are the same
+    assert created_tables == table_names
+
+    # Remove tables
+    remove_tables(engine=engine)
+
+    # Get tables
+    assert not table_exists(engine=engine, table_name=f"{MISSION_NAME}_file_level")
