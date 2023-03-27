@@ -16,9 +16,6 @@ __pycache__/
 # Ruff Cache
 .ruff_cache/
 
-# Remove hermes
-*.bin
-ducks.txt
 
 # Distribution / packaging
 .Python
