@@ -22,7 +22,7 @@ pytest-cov = ">=4.0.0"
 deptry = "^0.6.4"
 mypy = ">=0.981"
 pre-commit = "^2.20.0"
-tox = "^3.25.1"
+tox = ">=3.25.1"
 hermes_core = { git = "https://github.com/HERMES-SOC/hermes_core.git", branch = "main" }
 black = "^22.8.0"
 ruff = "^0.0.23"
