@@ -68,6 +68,9 @@ DEFAULT_CONFIG = {
         {"description": "Level 0 File", "full_name": "Level 0", "short_name": "l0"},
         {"description": "Level 1 File", "full_name": "Level 1", "short_name": "l1"},
         {"description": "Quick Look File", "full_name": "Quick Look", "short_name": "ql"},
+        {"description": "Level 2 File", "full_name": "Level 2", "short_name": "l2"},
+        {"description": "Level 3 File", "full_name": "Level 3", "short_name": "l3"},
+        {"description": "Level 4 File", "full_name": "Level 4", "short_name": "l4"},
     ],
     "file_types": [
         {"description": "Raw Binary File", "full_name": "Raw Binary", "short_name": "raw", "extension": ".bin"},
@@ -76,6 +79,12 @@ DEFAULT_CONFIG = {
             "full_name": "Common Data Format",
             "short_name": "cdf",
             "extension": ".cdf",
+        },
+        {
+            "description": "Flexible Image Transport System File",
+            "full_name": "Flexible Image Transport System",
+            "short_name": "fits",
+            "extension": ".fits",
         },
     ],
 }
