@@ -2,11 +2,10 @@
 Setup Tables
 """
 
-
 from sqlalchemy import inspect
 
-from cdftracker import CONFIGURATION, log
-from cdftracker.database import create_session
+from metatracker import CONFIGURATION, log
+from metatracker.database import create_session
 
 from . import file_level_table as FileLevelTable
 from . import file_type_table as FileTypeTable

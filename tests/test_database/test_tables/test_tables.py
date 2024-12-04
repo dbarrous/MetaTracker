@@ -1,9 +1,16 @@
 from sqlalchemy import Column, Integer
 from sqlalchemy.orm import declarative_base
 
-from cdftracker import CONFIGURATION
-from cdftracker.database import create_engine, create_session
-from cdftracker.database.tables import create_table, create_tables, get_columns, get_tables, remove_tables, table_exists
+from metatracker import CONFIGURATION
+from metatracker.database import create_engine, create_session
+from metatracker.database.tables import (
+    create_table,
+    create_tables,
+    get_columns,
+    get_tables,
+    remove_tables,
+    table_exists,
+)
 
 MISSION_NAME = CONFIGURATION.mission_name
 

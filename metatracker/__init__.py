@@ -1,7 +1,7 @@
 # Set up logging
 import logging
 
-from cdftracker.config import load_config
+from metatracker.config import load_config
 
 # Set up basic config for logging
 logging.basicConfig(level=logging.INFO)

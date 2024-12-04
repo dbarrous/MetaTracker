@@ -2,17 +2,17 @@ from datetime import datetime
 from pathlib import Path
 from typing import Callable
 
-from cdftracker import log
-from cdftracker.database import check_connection, create_session
-from cdftracker.database.tables.file_level_table import FileLevelTable
-from cdftracker.database.tables.file_type_table import FileTypeTable
-from cdftracker.database.tables.instrument_configuration_table import InstrumentConfigurationTable
-from cdftracker.database.tables.instrument_table import InstrumentTable
-from cdftracker.database.tables.science_file_table import ScienceFileTable
-from cdftracker.database.tables.science_product_table import ScienceProductTable
+from metatracker import log
+from metatracker.database import check_connection, create_session
+from metatracker.database.tables.file_level_table import FileLevelTable
+from metatracker.database.tables.file_type_table import FileTypeTable
+from metatracker.database.tables.instrument_configuration_table import InstrumentConfigurationTable
+from metatracker.database.tables.instrument_table import InstrumentTable
+from metatracker.database.tables.science_file_table import ScienceFileTable
+from metatracker.database.tables.science_product_table import ScienceProductTable
 
 
-class CDFTracker:
+class MetaTracker:
     def __init__(self, engine, science_file_parser: Callable):
         self.engine = engine
 

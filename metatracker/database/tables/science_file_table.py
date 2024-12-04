@@ -18,7 +18,7 @@ from datetime import datetime
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from cdftracker import CONFIGURATION
+from metatracker import CONFIGURATION
 
 from . import base_table as Base
 

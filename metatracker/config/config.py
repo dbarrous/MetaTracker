@@ -90,7 +90,7 @@ DEFAULT_CONFIG = {
 }
 
 
-class CDFTrackerConfiguration:
+class MetaTrackerConfiguration:
     db_host: str
     mission_name: str
     instruments: List[Dict[str, Any]]
@@ -132,7 +132,7 @@ class CDFTrackerConfiguration:
 
     def __repr__(self) -> str:
         return (
-            f"CDFTrackerConfiguration(db_host={self.db_host}, mission_name={self.mission_name},"
+            f"MetaTrackerConfiguration(db_host={self.db_host}, mission_name={self.mission_name},"
             f" instruments={self.instruments}, instrument_configurations={self.instrument_configurations},"
             f" file_levels={self.file_levels}, file_types={self.file_types})"
         )

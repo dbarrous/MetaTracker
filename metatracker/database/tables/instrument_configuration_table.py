@@ -5,7 +5,7 @@
 
 from sqlalchemy import Column, ForeignKey, Integer
 
-from cdftracker import CONFIGURATION
+from metatracker import CONFIGURATION
 
 from . import base_table as Base
 

@@ -6,7 +6,7 @@
 
 from sqlalchemy import Column, String
 
-from cdftracker import CONFIGURATION
+from metatracker import CONFIGURATION
 
 from . import base_table as Base
 
