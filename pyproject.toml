@@ -12,7 +12,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<4.0"
+python = ">=3.9,<4.0"
 sqlalchemy = ">=2.0.0,<3.0.0"
 
 
@@ -24,7 +24,7 @@ deptry = "^0.6.4"
 mypy = ">=0.981"
 pre-commit = "^2.20.0"
 tox = ">=3.25.1"
-hermes_core = { git = "https://github.com/HERMES-SOC/hermes_core.git", branch = "main" }
+swxsoc = { git = "https://github.com/swxsoc/swxsoc.git", branch = "main" }
 black = "^22.8.0"
 ruff = "^0.0.23"
 

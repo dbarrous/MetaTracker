@@ -23,7 +23,7 @@ class MetaTracker:
 
         self.science_file_parser = science_file_parser
 
-    def track(self, file: Path) -> dict:
+    def track(self, file: Path, science_product_id: int = None) -> int:
         """Track a file"""
         if not self.is_file_real(file):
             log.info("File does not exist")
@@ -32,14 +32,23 @@ class MetaTracker:
 
         parsed_file = self.parse_file(session, file)
         parsed_science_product = self.parse_science_product(session, file)
+    
+        # Check if science_product_id is provided
+        if science_product_id is None:
+            parsed_science_product = self.parse_science_product(session, file)
+            science_product_id = self.add_to_science_product_table(
+                session=session, parsed_science_product=parsed_science_product
+            )
+            log.info("Added to Science Product Table")
+        else:
+            log.info(f"Using existing science_product_id: {science_product_id}")
 
-        science_product_id = self.add_to_science_product_table(
-            session=session, parsed_science_product=parsed_science_product
-        )
         # Add to science file table
         log.info("Added to Science Product Table")
         self.add_to_science_file_table(session=session, parsed_file=parsed_file, science_product_id=science_product_id)
         log.info("Added to Science File Table")
+        
+        return science_product_id
 
     def add_to_science_file_table(self, session: type, parsed_file: dict, science_product_id: int):
         """Add a file to the file table"""
@@ -174,9 +183,12 @@ class MetaTracker:
                 log.info("Timestamp is not valid")
                 return {}
 
-            # Convert Time Object to Datetime
+            # Check if value is already a datetime object
+            if isinstance(science_product_data["time"].value, datetime):
+                reference_timestamp = science_product_data["time"].value
+            else:
+                reference_timestamp = datetime.strptime(science_product_data["time"].value, "%Y-%m-%dT%H:%M:%S.%f")
 
-            reference_timestamp = datetime.strptime(science_product_data["time"].value, "%Y-%m-%dT%H:%M:%S.%f")
             if not self.is_valid_instrument(session=session, instrument_short_name=science_product_data["instrument"]):
                 log.info("Instrument is not valid")
                 return {}

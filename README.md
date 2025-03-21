@@ -66,8 +66,8 @@ To install the library and its dependencies, follow these steps:
     #    }
     
     # For this example we will be using a predefined science file parser defined in the 
-    # hermes_core package (https://github.com/HERMES-SOC/hermes_core.git).
-    from hermes_core.util import util
+    # swxsoc package (https://github.com/swxsoc/swxsoc.git).
+    from swxsoc.util import util
 
     parser = util.parse_science_filename
     ```

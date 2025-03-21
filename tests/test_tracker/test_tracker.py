@@ -1,6 +1,10 @@
+import os
 from pathlib import Path
 
-from hermes_core.util import util
+# Set SWXSOC_MISSION environment variable
+os.environ["SWXSOC_MISSION"] = "hermes"
+
+from swxsoc.util import util
 
 from metatracker import log
 from metatracker.database import create_engine, create_session
@@ -11,11 +15,11 @@ from metatracker.tracker import tracker
 
 TEST_DB_HOST = "sqlite://"
 TEST_RANDOM_FILENAME = "./tests/test_files/ducks.txt"
-TEST_SCIENCE_FILENAME = "./tests/test_files/hermes_MAG_l0_2022259-030002_v01.bin"
-TEST_BAD_SCIENCE_FILENAME = "./tests/test_files/hermes_MAG_2l_2022259-030002_v01.bin"
-TEST_NON_EXISTING_SCIENCE_FILENAME = "./hermes_MAG_l0_2022259-030002_v01.bop"
+TEST_SCIENCE_FILENAME = "./tests/test_files/hermes_NEM_l0_2022259-030002_v01.bin"
+TEST_BAD_SCIENCE_FILENAME = "./tests/test_files/hermes_NEM_2l_2022259-030002_v01.bin"
+TEST_NON_EXISTING_SCIENCE_FILENAME = "./hermes_NEM_l0_2022259-030002_v01.bop"
 TEST_INSTRUMENTS = [
-    {"instrument_id": 1, "full_name": "MAG", "short_name": "mag", "description": "Magnetometer"},
+    {"instrument_id": 1, "full_name": "NEM", "short_name": "nem", "description": "Magnetometer"},
     {"instrument_id": 2, "full_name": "SIS", "short_name": "sis", "description": "Solar Wind Ion Spectrometer"},
 ]
 
@@ -49,7 +53,7 @@ def test_tracker_parse_extension() -> None:
     """
     Test Tracker parse extension
     """
-    # Create testfile with name hermes_MAG_l0_2022259-030002_v01.bin
+    # Create testfile with name hermes_NEM_l0_2022259-030002_v01.bin
     file_name = Path(TEST_SCIENCE_FILENAME)
 
     engine = create_engine(TEST_DB_HOST)
@@ -80,7 +84,7 @@ def test_tracker_is_valid_file_type() -> None:
     """
     Test Tracker is valid file type
     """
-    # Create testfile with name hermes_MAG_l0_2022259-030002_v01.bin
+    # Create testfile with name hermes_NEM_l0_2022259-030002_v01.bin
     test_good_file = Path(TEST_SCIENCE_FILENAME)
 
     # Create engine and session
@@ -99,7 +103,7 @@ def test_tracker_is_valid_file_type() -> None:
 
     assert test_tracker.is_valid_file_type(session=session, extension=extension)
 
-    # Create testfile with name hermes_MAG_l0_2022259-030002_v01.bin
+    # Create testfile with name hermes_NEM_l0_2022259-030002_v01.bin
     test_bad_file = Path(TEST_NON_EXISTING_SCIENCE_FILENAME)
 
     test_tracker = tracker.MetaTracker(engine=engine, science_file_parser=science_file_parser)
@@ -113,7 +117,7 @@ def test_tracker_parse_filename() -> None:
     """
     Test Tracker parse filename
     """
-    # Create testfile with name hermes_MAG_l0_2022259-030002_v01.bin
+    # Create testfile with name hermes_NEM_l0_2022259-030002_v01.bin
     file_name = Path(TEST_SCIENCE_FILENAME)
 
     engine = create_engine(TEST_DB_HOST)
@@ -125,7 +129,7 @@ def test_tracker_parse_filename() -> None:
 
     filename = test_tracker.parse_filename(file_name)
 
-    assert filename == "hermes_MAG_l0_2022259-030002_v01"
+    assert filename == "hermes_NEM_l0_2022259-030002_v01"
 
     file_name = Path(TEST_RANDOM_FILENAME)
 
@@ -138,7 +142,7 @@ def test_tracker_parse_file() -> None:
     """
     Test Tracker parse file
     """
-    # Create testfile with name hermes_MAG_l0_2022259-030002_v01.bin
+    # Create testfile with name hermes_NEM_l0_2022259-030002_v01.bin
     file_name = Path(TEST_SCIENCE_FILENAME)
 
     # Create file TEST_SCIENCE_FILENAME
@@ -168,15 +172,15 @@ def test_tracker_parse_file() -> None:
     with session.begin() as sql_session:
         found_file = (
             sql_session.query(ScienceFileTable)
-            .filter(ScienceFileTable.filename == "hermes_MAG_l0_2022259-030002_v01")
+            .filter(ScienceFileTable.filename == "hermes_NEM_l0_2022259-030002_v01")
             .first()
         )
 
-        assert found_file.filename == "hermes_MAG_l0_2022259-030002_v01"
+        assert found_file.filename == "hermes_NEM_l0_2022259-030002_v01"
 
 
 def test_tracker_parse_science_file() -> None:
-    # Create testfile with name hermes_MAG_l0_2022259-030002_v01.bin
+    # Create testfile with name hermes_NEM_l0_2022259-030002_v01.bin
     test_file = Path(TEST_SCIENCE_FILENAME)
 
     engine = create_engine(TEST_DB_HOST)
@@ -196,7 +200,7 @@ def test_tracker_parse_science_file() -> None:
 
 
 def test_track_is_valid_instrument() -> None:
-    # Create testfile with name hermes_MAG_l0_2022259-030002_v01.bin
+    # Create testfile with name hermes_NEM_l0_2022259-030002_v01.bin
     test_file = Path(TEST_SCIENCE_FILENAME)
 
     engine = create_engine(TEST_DB_HOST)
@@ -214,7 +218,7 @@ def test_track_is_valid_instrument() -> None:
 
     assert test_tracker.is_valid_instrument(session=session, instrument_short_name=instrument)
 
-    # Create testfile with name hermes_MAG_l0_2022259-030002_v01.bin
+    # Create testfile with name hermes_NEM_l0_2022259-030002_v01.bin
     test_file = Path(TEST_NON_EXISTING_SCIENCE_FILENAME)
 
     test_tracker = tracker.MetaTracker(engine=engine, science_file_parser=science_file_parser)
@@ -227,7 +231,7 @@ def test_track_is_valid_instrument() -> None:
 
 
 def test_get_instruments() -> None:
-    # Create testfile with name hermes_MAG_l0_2022259-030002_v01.bin
+    # Create testfile with name hermes_NEM_l0_2022259-030002_v01.bin
     Path(TEST_SCIENCE_FILENAME)
 
     engine = create_engine(TEST_DB_HOST)
@@ -249,7 +253,7 @@ def test_get_instruments() -> None:
 
 
 def test_get_instrument_configurations() -> None:
-    # Create testfile with name hermes_MAG_l0_2022259-030002_v01.bin
+    # Create testfile with name hermes_NEM_l0_2022259-030002_v01.bin
     Path(TEST_SCIENCE_FILENAME)
 
     engine = create_engine(TEST_DB_HOST)
@@ -275,7 +279,7 @@ def test_get_instrument_configurations() -> None:
 
 
 def test_get_instrument_by_id() -> None:
-    # Create testfile with name hermes_MAG_l0_2022259-030002_v01.bin
+    # Create testfile with name hermes_NEM_l0_2022259-030002_v01.bin
     Path(TEST_SCIENCE_FILENAME)
 
     engine = create_engine(TEST_DB_HOST)
@@ -297,7 +301,7 @@ def test_get_instrument_by_id() -> None:
 
 
 def test_map_instrument_list() -> None:
-    # Create testfile with name hermes_MAG_l0_2022259-030002_v01.bin
+    # Create testfile with name hermes_NEM_l0_2022259-030002_v01.bin
     Path(TEST_SCIENCE_FILENAME)
 
     engine = create_engine(TEST_DB_HOST)
@@ -321,7 +325,7 @@ def test_map_instrument_list() -> None:
 
 
 def test_track() -> None:
-    # Create testfile with name hermes_MAG_l0_2022259-030002_v01.bin
+    # Create testfile with name hermes_NEM_l0_2022259-030002_v01.bin
     engine = create_engine(TEST_DB_HOST)
 
     session = create_session(engine)
