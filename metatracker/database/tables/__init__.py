@@ -158,11 +158,11 @@ def populate_file_level_table(sql_session: type, file_levels: list, file_level_t
     :return: None
     :rtype: None
     """
-    log.info("Populating File Level Table")
+    log.debug("Populating File Level Table")
     for file_level in file_levels:
         with sql_session.begin() as session:
             if session.query(file_level_table).filter_by(short_name=file_level["short_name"]).first() is None:
-                log.info(f"Adding {file_level['short_name']} to File Level Table")
+                log.debug(f"Adding {file_level['short_name']} to File Level Table")
                 session.add(
                     file_level_table(
                         full_name=file_level["full_name"],
@@ -171,7 +171,7 @@ def populate_file_level_table(sql_session: type, file_levels: list, file_level_t
                     )
                 )
             else:
-                log.info(f"{file_level['short_name']} already exists in File Level Table")
+                log.debug(f"{file_level['short_name']} already exists in File Level Table")
 
 
 def populate_file_type_table(sql_session: type, file_types: list, file_level_table: type) -> None:
@@ -187,11 +187,11 @@ def populate_file_type_table(sql_session: type, file_types: list, file_level_tab
     :return: None
     :rtype: None
     """
-    log.info("Populating File Type Table")
+    log.debug("Populating File Type Table")
     for file_type in file_types:
         with sql_session.begin() as session:
             if session.query(file_level_table).filter_by(short_name=file_type["short_name"]).first() is None:
-                log.info(f"Adding {file_type['short_name']} to File Type Table")
+                log.debug(f"Adding {file_type['short_name']} to File Type Table")
                 session.add(
                     file_level_table(
                         short_name=file_type["short_name"],
@@ -201,7 +201,7 @@ def populate_file_type_table(sql_session: type, file_types: list, file_level_tab
                     )
                 )
             else:
-                log.info(f"{file_type['short_name']} already exists in File Type Table")
+                log.debug(f"{file_type['short_name']} already exists in File Type Table")
 
 
 def populate_instrument_table(sql_session: type, instruments: list, instrument_table: type) -> None:
@@ -217,11 +217,11 @@ def populate_instrument_table(sql_session: type, instruments: list, instrument_t
     :return: None
     :rtype: None
     """
-    log.info("Populating Instrument Table")
+    log.debug("Populating Instrument Table")
     for instrument in instruments:
         with sql_session.begin() as session:
             if session.query(instrument_table).filter_by(short_name=instrument["short_name"]).first() is None:
-                log.info(f"Adding {instrument['short_name']} to Instrument Table")
+                log.debug(f"Adding {instrument['short_name']} to Instrument Table")
                 session.add(
                     instrument_table(
                         instrument_id=instrument["instrument_id"],
@@ -231,7 +231,7 @@ def populate_instrument_table(sql_session: type, instruments: list, instrument_t
                     )
                 )
             else:
-                log.info(f"{instrument['short_name']} already exists in Instrument Table")
+                log.debug(f"{instrument['short_name']} already exists in Instrument Table")
 
 
 def populate_instrument_configuration_table(
@@ -249,7 +249,7 @@ def populate_instrument_configuration_table(
     :return: None
     :rtype: None
     """
-    log.info("Populating Instrument Configuration Table")
+    log.debug("Populating Instrument Configuration Table")
     for _instrument_configuration in instrument_configurations:
         with sql_session.begin() as session:
             # Check if the id exists in the Instrument Configuration Table
@@ -259,14 +259,14 @@ def populate_instrument_configuration_table(
                 .first()
                 is None
             ):
-                log.info(
+                log.debug(
                     f"Adding {_instrument_configuration['instrument_configuration_id']} to Instrument Configuration"
                     " Table"
                 )
                 session.add(instrument_configuration_table(**_instrument_configuration))
 
             else:
-                log.info(
+                log.debug(
                     f"Configuration with ID {_instrument_configuration['instrument_configuration_id']} already exists"
                     " in Instrument Configuration Table"
                 )
@@ -284,7 +284,7 @@ def create_table(engine: type, table_class: type) -> None:
     :return: None
     :rtype: None
     """
-    log.info(f"Creating {get_class_name(table_class)} Table if it doesn't exist")
+    log.debug(f"Creating {get_class_name(table_class)} Table if it doesn't exist")
     table_class.__table__.create(bind=engine, checkfirst=True)
 
 
@@ -349,5 +349,5 @@ def remove_tables(engine: type) -> None:
 
     # Remove Tables
     for table_class in table_classes:
-        log.info(f"Removing {get_class_name(table_class)} Table")
+        log.debug(f"Removing {get_class_name(table_class)} Table")
         table_class.__table__.drop(bind=engine, checkfirst=True)
