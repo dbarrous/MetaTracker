@@ -275,57 +275,70 @@ def populate_instrument_configuration_table(
 # Function to create table if it doesn't exist and match the table class
 def create_table(engine: type, table_class: type) -> None:
     """
-    Function to create table if it doesn't exist and match the table class
+    Create table if it doesn't exist.
 
-    :param engine: SQLAlchemy
+    :param engine: SQLAlchemy Engine
     :type engine: sqlalchemy.engine.base.Engine
     :param table_class: Table Class
     :type table_class: sqlalchemy.ext.declarative.api.DeclarativeMeta
     :return: None
     :rtype: None
     """
-    log.debug(f"Creating {get_class_name(table_class)} Table if it doesn't exist")
-    table_class.__table__.create(bind=engine, checkfirst=True)
+    table_name = table_class.__table__.name
+    if not table_exists(engine, table_name):
+        log.debug(f"Creating {get_class_name(table_class)} table: {table_name}")
+        table_class.__table__.create(bind=engine)
+    else:
+        log.debug(f"Table {table_name} already exists, skipping creation.")
 
+def is_table_empty(sql_session, table_class: type) -> bool:
+    """
+    Check if a table is empty.
+
+    :param session: SQLAlchemy Session
+    :type session: sqlalchemy.orm.session.Session
+    :param table_class: Table Class
+    :type table_class: sqlalchemy.ext.declarative.api.DeclarativeMeta
+    :return: True if table is empty, False otherwise
+    :rtype: bool
+    """
+    with sql_session.begin() as session:
+        return session.query(table_class).first() is None
 
 def create_tables(engine: type) -> None:
     """
-    Set up tables in the database if they don't exist and populate them
+    Set up tables in the database if they don't exist and populate them.
 
-    :param engine: SQLAlchemy
+    :param engine: SQLAlchemy Engine
     :type engine: sqlalchemy.engine.base.Engine
-    :param session: SQLAlchemy Session
-    :type session: sqlalchemy.orm.session.Session
     :return: None
     :rtype: None
     """
-
     # Create Session
     session = create_session(engine)
 
-    # Get Table Modules
+    # Get Table Modules and Classes
     table_modules = get_table_modules()
-
-    # Get Table Classes
     table_classes = get_table_classes(table_modules)
 
-    # Get Tables
-    get_tables_from_classes(table_classes)
-
-    # Populate Tables
+    # Create Tables and Populate Data
     for table_class in table_classes:
         create_table(engine, table_class)
 
-        if get_class_name(table_class) == "FileLevelTable":
+        # Skip population if the table is not empty
+        if not is_table_empty(session, table_class):
+            log.debug(f"{get_class_name(table_class)} already populated, skipping population.")
+            continue
+
+        # Populate only if the table is empty
+        class_name = get_class_name(table_class)
+        if class_name == "FileLevelTable":
             populate_file_level_table(session, CONFIGURATION.file_levels, table_class)
-
-        elif get_class_name(table_class) == "FileTypeTable":
+        elif class_name == "FileTypeTable":
             populate_file_type_table(session, CONFIGURATION.file_types, table_class)
-
-        elif get_class_name(table_class) == "InstrumentTable":
+        elif class_name == "InstrumentTable":
             populate_instrument_table(session, CONFIGURATION.instruments, table_class)
-
-        elif get_class_name(table_class) == "InstrumentConfigurationTable":
+        elif class_name == "InstrumentConfigurationTable":
             populate_instrument_configuration_table(session, CONFIGURATION.instrument_configurations, table_class)
 
 
