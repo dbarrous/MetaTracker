@@ -1,4 +1,4 @@
-from cdftracker.database import check_connection, create_engine, create_session
+from metatracker.database import check_connection, create_engine, create_session
 
 
 # Test create database engine

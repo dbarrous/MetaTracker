@@ -1,6 +1,6 @@
 import logging
 
-from cdftracker import get_config, log, set_config
+from metatracker import get_config, log, set_config
 
 
 def test_log() -> None:

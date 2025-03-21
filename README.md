@@ -1,15 +1,15 @@
-# CDFTracker
+# MetaTracker
 
 
-![GitHub issues](https://img.shields.io/github/issues/HERMES-SOC/CDFTracker)
-[![Build status](https://img.shields.io/github/actions/workflow/status/HERMES-SOC/CDFTracker/main.yml?branch=main)](https://github.com/HERMES-SOC/CDFTracker/actions/workflows/main.yml?query=branch%3Amain)
-[![codecov](https://codecov.io/gh/HERMES-SOC/CDFTracker/branch/main/graph/badge.svg)](https://codecov.io/gh/HERMES-SOC/CDFTracker)
-[![Commit activity](https://img.shields.io/github/commit-activity/m/HERMES-SOC/CDFTracker)](https://img.shields.io/github/commit-activity/m/HERMES-SOC/CDFTracker)
-[![License](https://img.shields.io/github/license/HERMES-SOC/CDFTracker)](https://img.shields.io/github/license/HERMES-SOC/CDFTracker)
+![GitHub issues](https://img.shields.io/github/issues/HERMES-SOC/MetaTracker)
+[![Build status](https://img.shields.io/github/actions/workflow/status/HERMES-SOC/MetaTracker/main.yml?branch=main)](https://github.com/HERMES-SOC/MetaTracker/actions/workflows/main.yml?query=branch%3Amain)
+[![codecov](https://codecov.io/gh/HERMES-SOC/MetaTracker/branch/main/graph/badge.svg)](https://codecov.io/gh/HERMES-SOC/MetaTracker)
+[![Commit activity](https://img.shields.io/github/commit-activity/m/HERMES-SOC/MetaTracker)](https://img.shields.io/github/commit-activity/m/HERMES-SOC/MetaTracker)
+[![License](https://img.shields.io/github/license/HERMES-SOC/MetaTracker)](https://img.shields.io/github/license/HERMES-SOC/MetaTracker)
 
 This is a python package that helps keep track of both Raw Binary and CDF Files in a Relational Database.
 
-- **Github repository**: <https://github.com/HERMES-SOC/CDFTracker/>
+- **Github repository**: <https://github.com/HERMES-SOC/MetaTracker/>
 
 ## Features
 - Track both Raw Binary and CDF Files
@@ -28,16 +28,16 @@ To install the library and its dependencies, follow these steps:
 1. Install with dependency manager of your choice:
     ```bash
     # Install with pip
-    pip install git+https://github.com/HERMES-SOC/CDFTracker.git
+    pip install git+https://github.com/HERMES-SOC/MetaTracker.git
 
     # Install with poetry
-    poetry add git+https://github.com/HERMES-SOC/CDFTracker.git
+    poetry add git+https://github.com/HERMES-SOC/MetaTracker.git
     ```
 
 
 2. Create both the engine and the session, with your RDBMS of choice connection string. For example, to create a session with a SQLite database, you can do the following:
     ```python
-    from cdftracker.database import create_engine, create_session
+    from metatracker.database import create_engine, create_session
 
     # Create a database engine and session
     engine = create_engine("sqlite:///test.db")
@@ -46,7 +46,7 @@ To install the library and its dependencies, follow these steps:
 
 3. If this is your first time using the library, you will need to create the database tables. To do so, run the following command:
     ```python
-    from cdftracker.database.tables import set_up_tables
+    from metatracker.database.tables import set_up_tables
 
     # Set up tables
     set_up_tables(engine, session)
@@ -71,13 +71,13 @@ To install the library and its dependencies, follow these steps:
 
     parser = util.parse_science_filename
     ```
-5. Now you can instantiate a `CDFTracker` object with the engine and science file parser function you defined:
+5. Now you can instantiate a `MetaTracker` object with the engine and science file parser function you defined:
     ```python
-    from cdftracker.tracker import tracker
+    from metatracker.tracker import tracker
     from pathlib import Path
 
     # Instantiate the tracker
-    tracker = tracker.CDFTracker(engine, parser)
+    tracker = tracker.MetaTracker(engine, parser)
 
     # Path of the science file to be tracked (for example)
     file = Path("./hermes_MAG_l0_2022259-030002_v01.bin")
@@ -89,7 +89,7 @@ To install the library and its dependencies, follow these steps:
     ```
 
 ## Database Schema
-This is the database schema for the CDFTracker database. The database schema is defined in the `cdftracker.database.tables` module. 
+This is the database schema for the MetaTracker database. The database schema is defined in the `metatracker.database.tables` module. 
 
 ## Contributing
 ### How to set-up Development Environment
@@ -98,9 +98,9 @@ This project makes use of [Poetry](https://python-poetry.org/) to manage depende
 1. Clone the repository
 
     ```bash
-    git clone https://github.com/HERMES-SOC/CDFTracker.git
+    git clone https://github.com/HERMES-SOC/MetaTracker.git
 
-    cd CDFTracker
+    cd MetaTracker
     ```
 
 2. Set-up your development environment

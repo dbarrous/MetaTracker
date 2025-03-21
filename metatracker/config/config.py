@@ -68,6 +68,9 @@ DEFAULT_CONFIG = {
         {"description": "Level 0 File", "full_name": "Level 0", "short_name": "l0"},
         {"description": "Level 1 File", "full_name": "Level 1", "short_name": "l1"},
         {"description": "Quick Look File", "full_name": "Quick Look", "short_name": "ql"},
+        {"description": "Level 2 File", "full_name": "Level 2", "short_name": "l2"},
+        {"description": "Level 3 File", "full_name": "Level 3", "short_name": "l3"},
+        {"description": "Level 4 File", "full_name": "Level 4", "short_name": "l4"},
     ],
     "file_types": [
         {"description": "Raw Binary File", "full_name": "Raw Binary", "short_name": "raw", "extension": ".bin"},
@@ -77,11 +80,17 @@ DEFAULT_CONFIG = {
             "short_name": "cdf",
             "extension": ".cdf",
         },
+        {
+            "description": "Flexible Image Transport System File",
+            "full_name": "Flexible Image Transport System",
+            "short_name": "fits",
+            "extension": ".fits",
+        },
     ],
 }
 
 
-class CDFTrackerConfiguration:
+class MetaTrackerConfiguration:
     db_host: str
     mission_name: str
     instruments: List[Dict[str, Any]]
@@ -123,7 +132,7 @@ class CDFTrackerConfiguration:
 
     def __repr__(self) -> str:
         return (
-            f"CDFTrackerConfiguration(db_host={self.db_host}, mission_name={self.mission_name},"
+            f"MetaTrackerConfiguration(db_host={self.db_host}, mission_name={self.mission_name},"
             f" instruments={self.instruments}, instrument_configurations={self.instrument_configurations},"
             f" file_levels={self.file_levels}, file_types={self.file_types})"
         )
