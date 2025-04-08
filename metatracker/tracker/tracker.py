@@ -94,6 +94,10 @@ class MetaTracker:
 
     def add_to_science_product_table(self, session: type, parsed_science_product: dict):
         sess = session()
+
+        if parsed_science_product is {}:
+            log.info("Science product is not valid")
+            return
         
         # Check if science product exists with same instrument configuration id, mode, and reference timestamp
         science_product = (
@@ -194,14 +198,13 @@ class MetaTracker:
 
             if not self.is_valid_instrument(session=session, instrument_short_name=science_product_data["instrument"]):
                 log.info("Instrument is not valid")
-                raise ValueError(f"Instrument is not valid {science_product_data} for {science_product_data['instrument']}")
                 return {}
 
             config = self.get_instrument_configurations(session=session)
 
             if [science_product_data["instrument"]] not in config.values():
                 log.info("Instrument configuration is not valid")
-                raise ValueError(f"Instrument configuration is not valid {science_product_data} for {config.values()}")
+                return {}
 
             # return Key with matching list values
             instrument_config_id = [k for k, v in config.items() if science_product_data["instrument"] in v][0]
