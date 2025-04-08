@@ -95,10 +95,6 @@ class MetaTracker:
     def add_to_science_product_table(self, session: type, parsed_science_product: dict):
         sess = session()
 
-        if parsed_science_product is {}:
-            log.info("Science product is not valid")
-            return
-        
         # Check if science product exists with same instrument configuration id, mode, and reference timestamp
         science_product = (
             sess.query(ScienceProductTable)
