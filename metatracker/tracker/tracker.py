@@ -26,7 +26,7 @@ class MetaTracker:
     def track(self, file: Path, science_product_id: int = None) -> int:
         """Track a file"""
         if not self.is_file_real(file):
-            log.info("File does not exist")
+            log.debug("File does not exist")
             raise FileNotFoundError("File does not exist")
         session = create_session(self.engine)
 
@@ -38,14 +38,14 @@ class MetaTracker:
             science_product_id = self.add_to_science_product_table(
                 session=session, parsed_science_product=parsed_science_product
             )
-            log.info("Added to Science Product Table")
+            log.debug("Added to Science Product Table")
         else:
-            log.info(f"Using existing science_product_id: {science_product_id}")
+            log.debug(f"Using existing science_product_id: {science_product_id}")
 
         # Add to science file table
-        log.info("Added to Science Product Table")
+        log.debug("Added to Science Product Table")
         self.add_to_science_file_table(session=session, parsed_file=parsed_file, science_product_id=science_product_id)
-        log.info("Added to Science File Table")
+        log.debug("Added to Science File Table")
         
         return science_product_id
 
@@ -55,7 +55,7 @@ class MetaTracker:
         with session.begin() as sql_session:
             # Check if file exists with same filepath
             if not parsed_file:
-                log.info("File is not valid")
+                log.debug("File is not valid")
                 return
             
             file = (
@@ -155,13 +155,13 @@ class MetaTracker:
         if self.is_file_real(file):
             extension = self.parse_extension(file)
             if not self.is_valid_file_type(session=session, extension=extension):
-                log.info("File type is not valid")
+                log.debug("File type is not valid")
                 return {}
 
             science_file_data = self.parse_science_file_data(file)
 
             if not self.is_valid_file_level(session=session, file_level=science_file_data["level"]):
-                log.info("File level is not valid")
+                log.debug("File level is not valid")
                 return {}
 
             return {
@@ -183,7 +183,7 @@ class MetaTracker:
             science_product_data = self.parse_science_file_data(file)
 
             if not self.is_valid_timestamp(science_product_data["time"]):
-                log.info("Timestamp is not valid")
+                log.debug("Timestamp is not valid")
                 return {}
 
             # Check if value is already a datetime object
@@ -193,13 +193,13 @@ class MetaTracker:
                 reference_timestamp = datetime.strptime(science_product_data["time"].value, "%Y-%m-%dT%H:%M:%S.%f")
 
             if not self.is_valid_instrument(session=session, instrument_short_name=science_product_data["instrument"]):
-                log.info("Instrument is not valid")
+                log.debug("Instrument is not valid")
                 return {}
 
             config = self.get_instrument_configurations(session=session)
 
             if [science_product_data["instrument"]] not in config.values():
-                log.info("Instrument configuration is not valid")
+                log.debug("Instrument configuration is not valid")
                 return {}
 
             # return Key with matching list values
