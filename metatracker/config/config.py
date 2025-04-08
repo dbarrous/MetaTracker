@@ -73,7 +73,9 @@ DEFAULT_CONFIG = {
         {"description": "Level 4 File", "full_name": "Level 4", "short_name": "l4"},
     ],
     "file_types": [
-        {"description": "Raw Binary File", "full_name": "Raw Binary", "short_name": "raw", "extension": ".bin"},
+        {"description": "Raw Binary File", "full_name": "Raw BINARY", "short_name": "bin", "extension": ".bin"},
+        {"description": "Raw Dat File", "full_name": "Raw DAT", "short_name": "dat", "extension": ".dat"},
+        {"description": "Raw IDX File", "full_name": "Raw IDX", "short_name": "idx", "extension": ".idx"},
         {
             "description": "Common Data Format File",
             "full_name": "Common Data Format",
