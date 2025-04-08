@@ -106,7 +106,6 @@ class MetaTracker:
                 ScienceProductTable.instrument_configuration_id
                 == parsed_science_product["instrument_configuration_id"],
                 ScienceProductTable.mode == parsed_science_product["mode"],
-                ScienceProductTable.reference_timestamp == parsed_science_product["reference_timestamp"],
             )
             .first()
         )
