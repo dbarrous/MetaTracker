@@ -23,16 +23,16 @@ class MetaTracker:
 
         self.science_file_parser = science_file_parser
 
-    def track(self, file: Path, science_product_id: int = None) -> int:
+    def track(self, file: Path, s3_key: str, s3_bucket: str, science_product_id: int = None) -> int:
         """Track a file"""
         if not self.is_file_real(file):
             log.debug("File does not exist")
             raise FileNotFoundError("File does not exist")
         session = create_session(self.engine)
 
-        parsed_file = self.parse_file(session, file)
+        parsed_file = self.parse_file(session, file, s3_key, s3_bucket)
         parsed_science_product = self.parse_science_product(session, file)
-    
+
         # Check if science_product_id is provided
         if science_product_id is None:
             science_product_id = self.add_to_science_product_table(
@@ -46,7 +46,7 @@ class MetaTracker:
         log.debug("Added to Science Product Table")
         self.add_to_science_file_table(session=session, parsed_file=parsed_file, science_product_id=science_product_id)
         log.debug("Added to Science File Table")
-        
+
         return science_product_id
 
     def add_to_science_file_table(self, session: type, parsed_file: dict, science_product_id: int):
@@ -57,7 +57,7 @@ class MetaTracker:
             if not parsed_file:
                 log.debug("File is not valid")
                 return
-            
+
             file = (
                 sql_session.query(ScienceFileTable)
                 .filter(ScienceFileTable.file_path == parsed_file["file_path"])
@@ -72,6 +72,8 @@ class MetaTracker:
                 file.file_version = parsed_file["file_version"]
                 file.file_size = parsed_file["file_size"]
                 file.file_extension = parsed_file["file_extension"]
+                file.s3_key = parsed_file["s3_key"]
+                file.s3_bucket = parsed_file["s3_bucket"]
                 file.file_path = parsed_file["file_path"]
                 file.file_modified_timestamp = parsed_file["file_modified_timestamp"]
                 file.is_public = parsed_file["is_public"]
@@ -85,6 +87,8 @@ class MetaTracker:
                 filename=parsed_file["filename"],
                 file_version=parsed_file["file_version"],
                 file_size=parsed_file["file_size"],
+                s3_key=parsed_file["s3_key"],
+                s3_bucket=parsed_file["s3_bucket"],
                 file_extension=parsed_file["file_extension"],
                 file_path=parsed_file["file_path"],
                 file_modified_timestamp=parsed_file["file_modified_timestamp"],
@@ -149,7 +153,7 @@ class MetaTracker:
 
         return self.science_file_parser(file)
 
-    def parse_file(self, session, file: Path) -> dict:
+    def parse_file(self, session, file: Path, s3_key: str, s3_bucket: str) -> dict:
         """Parse a file"""
 
         if self.is_file_real(file):
@@ -166,6 +170,8 @@ class MetaTracker:
 
             return {
                 "file_path": self.parse_absolute_path(file),
+                "s3_key": s3_key,
+                "s3_bucket": s3_bucket,
                 "filename": self.parse_filename(file),
                 "file_extension": self.parse_extension(file),
                 "file_size": self.get_file_size(file),

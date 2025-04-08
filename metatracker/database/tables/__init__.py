@@ -291,6 +291,7 @@ def create_table(engine: type, table_class: type) -> None:
     else:
         log.debug(f"Table {table_name} already exists, skipping creation.")
 
+
 def is_table_empty(sql_session, table_class: type) -> bool:
     """
     Check if a table is empty.
@@ -304,6 +305,7 @@ def is_table_empty(sql_session, table_class: type) -> bool:
     """
     with sql_session.begin() as session:
         return session.query(table_class).first() is None
+
 
 def create_tables(engine: type) -> None:
     """

@@ -4,6 +4,8 @@
 # file_type: int (Foreign Key)
 # file_level: int (Foreign Key)
 # filename: str
+# s3_key: str
+# s3_bucket: str
 # file_version: int
 # file_size: int
 # file_extension: str
@@ -51,6 +53,12 @@ class ScienceFileTable(Base.Base):
     # File Path Of Science File
     file_path = Column(String)
 
+    # S3 Key Of Science File
+    s3_key = Column(String)
+
+    # S3 Bucket Of Science File
+    s3_bucket = Column(String)
+
     # File Size Of Science File
     file_size = Column(Integer)
 
@@ -68,6 +76,8 @@ class ScienceFileTable(Base.Base):
         file_type: str,
         file_level: str,
         filename: str,
+        s3_key: str,
+        s3_bucket: str,
         file_version: int,
         file_size: int,
         file_extension: str,
@@ -86,6 +96,8 @@ class ScienceFileTable(Base.Base):
         self.file_size = file_size
         self.file_extension = file_extension
         self.file_path = file_path
+        self.s3_key = s3_key
+        self.s3_bucket = s3_bucket
         self.file_size = file_size
         self.file_modified_timestamp = file_modified_timestamp
         self.is_public = is_public
