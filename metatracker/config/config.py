@@ -7,62 +7,20 @@ from typing import Any, Dict, List
 
 DEFAULT_CONFIG = {
     "db_host": "sqlite:///",
-    "mission_name": "hermes",
+    "mission_name": "padre",
     "instruments": [
-        {
-            "instrument_id": 1,
-            "description": "Electron Electrostatic Analyzer (EEA)",
-            "full_name": "EEA",
-            "short_name": "eea",
-        },
+        {"instrument_id": 1, "description": "MeDDEA (MEDDEA)", "full_name": "MeDDEA", "short_name": "meddea"},
         {
             "instrument_id": 2,
-            "description": "Noise Eliminating Magnetometer Instrument in a Small Integrated System",
-            "full_name": "NEMISIS",
-            "short_name": "nemisis",
-        },
-        {
-            "instrument_id": 3,
-            "description": "Solar Probe Analyzer for Ions",
-            "full_name": "SPANI-I",
-            "short_name": "spani",
-        },
-        {
-            "instrument_id": 4,
-            "description": "Miniaturized Electron pRoton Telescope",
-            "full_name": "MERIT",
-            "short_name": "merit",
+            "description": "Solar HARd X-ray Polarimeter (SHARP)",
+            "full_name": "Solar HARd X-ray Polarimeter",
+            "short_name": "sharp",
         },
     ],
     "instrument_configurations": [
-        {
-            "instrument_configuration_id": 1,
-            "instrument_1_id": 1,
-            "instrument_2_id": None,
-            "instrument_3_id": None,
-            "instrument_4_id": None,
-        },
-        {
-            "instrument_configuration_id": 2,
-            "instrument_1_id": 2,
-            "instrument_2_id": None,
-            "instrument_3_id": None,
-            "instrument_4_id": None,
-        },
-        {
-            "instrument_configuration_id": 3,
-            "instrument_1_id": 3,
-            "instrument_2_id": None,
-            "instrument_3_id": None,
-            "instrument_4_id": None,
-        },
-        {
-            "instrument_configuration_id": 4,
-            "instrument_1_id": 4,
-            "instrument_2_id": None,
-            "instrument_3_id": None,
-            "instrument_4_id": None,
-        },
+        {"instrument_configuration_id": 1, "instrument_1_id": 1, "instrument_2_id": None},
+        {"instrument_configuration_id": 2, "instrument_1_id": 2, "instrument_2_id": None},
+        {"instrument_configuration_id": 3, "instrument_1_id": 1, "instrument_2_id": 2},
     ],
     "file_levels": [
         {"description": "Level 0 File", "full_name": "Level 0", "short_name": "l0"},
