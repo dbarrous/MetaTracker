@@ -98,6 +98,22 @@ class MetaTracker:
         if parsed_science_product is {}:
             log.info("Science product is not valid")
             return
+        
+        # Check if science product exists with same instrument configuration id, mode, and reference timestamp
+        science_product = (
+            sess.query(ScienceProductTable)
+            .filter(
+                ScienceProductTable.instrument_configuration_id
+                == parsed_science_product["instrument_configuration_id"],
+                ScienceProductTable.mode == parsed_science_product["mode"],
+                ScienceProductTable.reference_timestamp == parsed_science_product["reference_timestamp"],
+            )
+            .first()
+        )
+
+        # If science product exists, return science product id
+        if science_product:
+            return science_product.science_product_id
 
         # If science product doesn't exist, add it to the database
         science_product = ScienceProductTable(
