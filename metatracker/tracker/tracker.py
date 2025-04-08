@@ -35,7 +35,6 @@ class MetaTracker:
     
         # Check if science_product_id is provided
         if science_product_id is None:
-            parsed_science_product = self.parse_science_product(session, file)
             science_product_id = self.add_to_science_product_table(
                 session=session, parsed_science_product=parsed_science_product
             )
@@ -205,6 +204,8 @@ class MetaTracker:
 
             # return Key with matching list values
             instrument_config_id = [k for k, v in config.items() if science_product_data["instrument"] in v][0]
+            if not instrument_config_id:
+                raise ValueError(f"Instrument configuration id not found {science_product_data}")
 
             return {
                 "instrument_configuration_id": instrument_config_id,
