@@ -13,6 +13,7 @@ from . import instrument_configuration_table as InstrumentConfigurationTable
 from . import instrument_table as InstrumentTable
 from . import science_file_table as ScienceFileTable
 from . import science_product_table as ScienceProductTable
+from . import status_table as StatusTable
 
 
 def get_class_name(class_object: type) -> str:
@@ -45,6 +46,7 @@ def get_table_modules() -> list:
         InstrumentConfigurationTable,
         ScienceProductTable,
         ScienceFileTable,
+        StatusTable,
     ]
 
     return modules

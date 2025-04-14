@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable
 
@@ -10,6 +10,7 @@ from metatracker.database.tables.instrument_configuration_table import Instrumen
 from metatracker.database.tables.instrument_table import InstrumentTable
 from metatracker.database.tables.science_file_table import ScienceFileTable
 from metatracker.database.tables.science_product_table import ScienceProductTable
+from metatracker.database.tables.status_table import StatusTable
 
 
 class MetaTracker:
@@ -23,7 +24,9 @@ class MetaTracker:
 
         self.science_file_parser = science_file_parser
 
-    def track(self, file: Path, s3_key: str, s3_bucket: str, science_product_id: int = None) -> int:
+    def track(
+        self, file: Path, s3_key: str, s3_bucket: str, science_product_id: int = None, status: dict = None
+    ) -> int:
         """Track a file"""
         if not self.is_file_real(file):
             log.debug("File does not exist")
@@ -44,12 +47,26 @@ class MetaTracker:
 
         # Add to science file table
         log.debug("Added to Science Product Table")
-        self.add_to_science_file_table(session=session, parsed_file=parsed_file, science_product_id=science_product_id)
+        science_file_id = self.add_to_science_file_table(
+            session=session, parsed_file=parsed_file, science_product_id=science_product_id
+        )
         log.debug("Added to Science File Table")
 
-        return science_product_id
+        if status:
+            # Add to status table if status is provided
+            log.debug("Added to Status Table")
+            self.add_to_status_table(
+                session=session,
+                science_file_id=science_file_id,
+                processing_status=status.get("processing_status"),
+                processing_status_message=status.get("processing_status_message"),
+                processing_time_length=status.get("processing_time_length"),
+                origin_file_id=status.get("origin_file_id", None),
+            )
 
-    def add_to_science_file_table(self, session: type, parsed_file: dict, science_product_id: int):
+        return science_file_id, science_product_id
+
+    def add_to_science_file_table(self, session: type, parsed_file: dict, science_product_id: int) -> int:
         """Add a file to the file table"""
 
         with session.begin() as sql_session:
@@ -77,7 +94,7 @@ class MetaTracker:
                 file.file_path = parsed_file["file_path"]
                 file.file_modified_timestamp = parsed_file["file_modified_timestamp"]
                 file.is_public = parsed_file["is_public"]
-                return
+                return file.science_file_id
 
             # Try to add file to database if it doesn't exist already if it does, update it
             file = ScienceFileTable(
@@ -95,6 +112,12 @@ class MetaTracker:
                 is_public=parsed_file["is_public"],
             )
             sql_session.add(file)
+
+            # Get the science file id
+            sql_session.flush()
+            science_file_id = file.science_file_id
+            log.debug(f"Added file to Science File Table with id: {science_file_id}")
+            return science_file_id
 
     def add_to_science_product_table(self, session: type, parsed_science_product: dict):
         sess = session()
@@ -126,6 +149,43 @@ class MetaTracker:
 
         # return science product id that was just added
         return science_product.science_product_id
+
+    def add_to_status_table(
+        self,
+        session: type,
+        science_file_id: int,
+        processing_status: str,
+        processing_status_message: str = None,
+        processing_time_length: int = None,
+        origin_file_id: int = None,
+    ) -> int:
+        """Add a status entry for a science file to the status table"""
+
+        with session.begin() as sql_session:
+            # Check if status entry already exists for this science file
+            status = sql_session.query(StatusTable).filter(StatusTable.science_file_id == science_file_id).first()
+
+            # If status entry exists, update it
+            if status:
+                status.processing_status = processing_status
+                status.processing_status_message = processing_status_message
+                status.last_processing_timestamp = datetime.now(timezone.utc)
+                status.reprocessed_count += 1
+                status.processing_time_length = processing_time_length
+                return status.status_id
+
+            # Create new status entry
+            status = StatusTable(
+                science_file_id=science_file_id,
+                processing_status=processing_status,
+                processing_status_message=processing_status_message,
+                processing_time_length=processing_time_length,
+                origin_file_id=origin_file_id,
+            )
+            sql_session.add(status)
+            sql_session.flush()
+
+            return status.status_id
 
     @staticmethod
     def get_file_size(file: Path) -> int:
