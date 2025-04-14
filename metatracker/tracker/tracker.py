@@ -392,3 +392,19 @@ class MetaTracker:
 
         with session.begin():
             return [self.get_instrument_by_id(session, instrument_id) for instrument_id in instrument_list]
+
+    def get_failed_files(self) -> list:
+        """Get all files with status 'FAILED'."""
+        session = create_session(self.engine)
+        
+        # Query the StatusTable for records with 'FAILED' processing status
+        failed_files_query = (
+            session.query(ScienceFileTable.s3_key, ScienceFileTable.s3_bucket)
+            .join(StatusTable, StatusTable.science_file_id == ScienceFileTable.science_file_id)
+            .filter(StatusTable.processing_status == 'FAILED')
+        )
+
+        # Fetch the results and return them as a list of tuples (s3_key, s3_bucket)
+        failed_files = failed_files_query.all()
+
+        return failed_files
