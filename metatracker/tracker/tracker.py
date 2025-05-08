@@ -26,7 +26,7 @@ class MetaTracker:
 
     def track(
         self, file: Path, s3_key: str, s3_bucket: str, science_product_id: int = None, status: dict = None
-    ) -> int:
+    ) -> tuple:
         """Track a file"""
         if not self.is_file_real(file):
             log.debug("File does not exist")
@@ -328,7 +328,7 @@ class MetaTracker:
     def parse_extension(file: Path) -> str:
         """Parse the extension of a file"""
 
-        return file.suffix
+        return file.suffix.lower()
 
     @staticmethod
     def parse_filename(file: Path) -> str:
