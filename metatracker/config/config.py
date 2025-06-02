@@ -23,6 +23,7 @@ DEFAULT_CONFIG = {
         {"instrument_configuration_id": 3, "instrument_1_id": 1, "instrument_2_id": 2},
     ],
     "file_levels": [
+        {"description": "RAW File", "full_name": "RAW", "short_name": "raw"},
         {"description": "Level 0 File", "full_name": "Level 0", "short_name": "l0"},
         {"description": "Level 1 File", "full_name": "Level 1", "short_name": "l1"},
         {"description": "Quick Look File", "full_name": "Quick Look", "short_name": "ql"},
