@@ -81,33 +81,23 @@ class MetaTracker:
         """Add a file to the file table"""
 
         with session.begin() as sql_session:
-            # Check if file exists with same filepath
             if not parsed_file:
                 log.debug("File is not valid")
                 return
 
+            # 1. Check for existing file by UNIQUE constraint (filename)
             file = (
                 sql_session.query(ScienceFileTable)
-                .filter(ScienceFileTable.file_path == parsed_file["file_path"])
+                .filter(ScienceFileTable.filename == parsed_file["filename"])
                 .first()
             )
 
-            # If file exists, update it
             if file:
-                file.file_type = parsed_file["file_type"]
-                file.file_level = parsed_file["file_level"]
-                file.filename = parsed_file["filename"]
-                file.file_version = parsed_file["file_version"]
-                file.file_size = parsed_file["file_size"]
-                file.file_extension = parsed_file["file_extension"]
-                file.s3_key = parsed_file["s3_key"]
-                file.s3_bucket = parsed_file["s3_bucket"]
-                file.file_path = parsed_file["file_path"]
-                file.file_modified_timestamp = parsed_file["file_modified_timestamp"]
-                file.is_public = parsed_file["is_public"]
+                # Optionally update fields if needed (for now just return the id)
+                log.debug(f"File already exists in Science File Table with id: {file.science_file_id}")
                 return file.science_file_id
 
-            # Try to add file to database if it doesn't exist already if it does, update it
+            # 2. If not found, insert new
             file = ScienceFileTable(
                 science_product_id=science_product_id,
                 file_type=parsed_file["file_type"],
@@ -123,8 +113,6 @@ class MetaTracker:
                 is_public=parsed_file["is_public"],
             )
             sql_session.add(file)
-
-            # Get the science file id
             sql_session.flush()
             science_file_id = file.science_file_id
             log.debug(f"Added file to Science File Table with id: {science_file_id}")
