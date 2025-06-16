@@ -330,12 +330,12 @@ def create_tables(engine: type) -> None:
     for table_class in table_classes:
         # Populate only if the table is empty
         class_name = get_class_name(table_class)
+        create_table(engine, table_class)
         # Create Association Table for Status and Origin Files
         if class_name == "StatusTable":
             log.debug("Creating Status Origin Association Table")
             status_origin_association.create(bind=engine, checkfirst=True)
             # Create the association table
-        create_table(engine, table_class)
 
         # Skip population if the table is not empty
         if not is_table_empty(session, table_class):
