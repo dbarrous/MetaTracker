@@ -319,27 +319,20 @@ def create_tables(engine: type) -> None:
     :return: None
     :rtype: None
     """
-    # Create Session
+    # --- Create all tables at once, in order ---
+    from metatracker.database.tables.base_table import Base  # adjust import if needed
+    Base.metadata.create_all(engine)
+
+    # --- Now do the population as before ---
     session = create_session(engine)
 
-    # Get Table Modules and Classes
     table_modules = get_table_modules()
     table_classes = get_table_classes(table_modules)
 
-    # Create Tables and Populate Data
     for table_class in table_classes:
-        # Populate only if the table is empty
         class_name = get_class_name(table_class)
-        create_table(engine, table_class)
-        # Create Association Table for Status and Origin Files
-        if class_name == "StatusTable":
-            log.debug("Creating Status Origin Association Table")
-            status_origin_association.create(bind=engine, checkfirst=True)
-            # Create the association table
-
-        # Skip population if the table is not empty
         if not is_table_empty(session, table_class):
-            log.debug(f"{get_class_name(table_class)} already populated, skipping population.")
+            log.debug(f"{class_name} already populated, skipping population.")
             continue
 
         if class_name == "FileLevelTable":
@@ -349,6 +342,7 @@ def create_tables(engine: type) -> None:
         elif class_name == "InstrumentTable":
             populate_instrument_table(session, CONFIGURATION.instruments, table_class)
         elif class_name == "InstrumentConfigurationTable":
+            populate_instrument_configuration_table(session, CONFIGURATION.instrument_configurations, table_class)
             populate_instrument_configuration_table(session, CONFIGURATION.instrument_configurations, table_class)
 
 
