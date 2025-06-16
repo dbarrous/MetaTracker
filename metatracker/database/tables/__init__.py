@@ -326,11 +326,15 @@ def create_tables(engine: type) -> None:
     table_modules = get_table_modules()
     table_classes = get_table_classes(table_modules)
 
-    # Create Association Table for Status and Origin Files
-    status_origin_association.create(bind=engine, checkfirst=True)
-    
     # Create Tables and Populate Data
     for table_class in table_classes:
+        # Populate only if the table is empty
+        class_name = get_class_name(table_class)
+        # Create Association Table for Status and Origin Files
+        if class_name == "StatusTable":
+            log.debug("Creating Status Origin Association Table")
+            status_origin_association.create(bind=engine, checkfirst=True)
+            # Create the association table
         create_table(engine, table_class)
 
         # Skip population if the table is not empty
@@ -338,8 +342,6 @@ def create_tables(engine: type) -> None:
             log.debug(f"{get_class_name(table_class)} already populated, skipping population.")
             continue
 
-        # Populate only if the table is empty
-        class_name = get_class_name(table_class)
         if class_name == "FileLevelTable":
             populate_file_level_table(session, CONFIGURATION.file_levels, table_class)
         elif class_name == "FileTypeTable":
