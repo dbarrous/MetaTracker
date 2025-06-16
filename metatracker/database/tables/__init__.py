@@ -290,7 +290,7 @@ def create_table(engine: type, table_class: type) -> None:
     table_name = table_class.__table__.name
     if not table_exists(engine, table_name):
         log.debug(f"Creating {get_class_name(table_class)} table: {table_name}")
-        table_class.__table__.create(bind=engine)
+        table_class.__table__.create(bind=engine, checkfirst=True)
     else:
         log.debug(f"Table {table_name} already exists, skipping creation.")
 
@@ -328,6 +328,7 @@ def create_tables(engine: type) -> None:
 
     # Create Association Table for Status and Origin Files
     status_origin_association.create(bind=engine, checkfirst=True)
+    
     # Create Tables and Populate Data
     for table_class in table_classes:
         create_table(engine, table_class)
