@@ -1,6 +1,9 @@
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+from sqlalchemy.exc import OperationalError, IntegrityError
+
 
 from metatracker import log
 from metatracker.database import check_connection, create_session
@@ -11,6 +14,13 @@ from metatracker.database.tables.instrument_table import InstrumentTable
 from metatracker.database.tables.science_file_table import ScienceFileTable
 from metatracker.database.tables.science_product_table import ScienceProductTable
 from metatracker.database.tables.status_table import StatusTable
+
+db_retry = retry(
+    reraise=True,
+    stop=stop_after_attempt(5),  # Try up to 5 times
+    wait=wait_exponential(multiplier=1, min=2, max=10),  # 2s, 4s, 8s, 10s, 10s
+    retry=(retry_if_exception_type(OperationalError) | retry_if_exception_type(IntegrityError)),
+)
 
 
 class MetaTracker:
@@ -61,11 +71,12 @@ class MetaTracker:
                 processing_status=status.get("processing_status"),
                 processing_status_message=status.get("processing_status_message"),
                 processing_time_length=status.get("processing_time_length"),
-                origin_file_id=status.get("origin_file_id", None),
+                origin_file_ids=status.get("origin_file_ids", None),
             )
 
         return science_file_id, science_product_id
 
+    @db_retry
     def add_to_science_file_table(self, session: type, parsed_file: dict, science_product_id: int) -> int:
         """Add a file to the file table"""
 
@@ -119,6 +130,7 @@ class MetaTracker:
             log.debug(f"Added file to Science File Table with id: {science_file_id}")
             return science_file_id
 
+    @db_retry
     def add_to_science_product_table(self, session: type, parsed_science_product: dict):
         sess = session()
 
@@ -150,6 +162,7 @@ class MetaTracker:
         # return science product id that was just added
         return science_product.science_product_id
 
+    @db_retry
     def add_to_status_table(
         self,
         session: type,
@@ -157,34 +170,51 @@ class MetaTracker:
         processing_status: str,
         processing_status_message: str = None,
         processing_time_length: int = None,
-        origin_file_id: int = None,
+        origin_file_ids: list[int] = None,
     ) -> int:
-        """Add a status entry for a science file to the status table"""
+        """Add or update a status entry for a science file in the status table."""
 
         with session.begin() as sql_session:
-            # Check if status entry already exists for this science file
+            # Validate and fetch origin files if provided
+            origin_files = []
+            if origin_file_ids is not None:
+                if not isinstance(origin_file_ids, list) or not all(isinstance(i, int) for i in origin_file_ids):
+                    raise ValueError("origin_file_ids must be a list of integers or None")
+                origin_files = (
+                    sql_session.query(ScienceFileTable)
+                    .filter(ScienceFileTable.science_file_id.in_(origin_file_ids))
+                    .all()
+                )
+
+            # Check if status already exists
             status = sql_session.query(StatusTable).filter(StatusTable.science_file_id == science_file_id).first()
 
-            # If status entry exists, update it
             if status:
+                # Update fields
                 status.processing_status = processing_status
                 status.processing_status_message = processing_status_message
                 status.last_processing_timestamp = datetime.now(timezone.utc)
                 status.reprocessed_count += 1
                 status.processing_time_length = processing_time_length
-                return status.status_id
 
-            # Create new status entry
-            status = StatusTable(
-                science_file_id=science_file_id,
-                processing_status=processing_status,
-                processing_status_message=processing_status_message,
-                processing_time_length=processing_time_length,
-                origin_file_id=origin_file_id,
-            )
-            sql_session.add(status)
+                # Extend existing origin_files without duplicates
+                if origin_files:
+                    existing_ids = {f.science_file_id for f in status.origin_files}
+                    new_files = [f for f in origin_files if f.science_file_id not in existing_ids]
+                    status.origin_files.extend(new_files)
+
+            else:
+                # Create new entry
+                status = StatusTable(
+                    science_file_id=science_file_id,
+                    processing_status=processing_status,
+                    processing_status_message=processing_status_message,
+                    processing_time_length=processing_time_length,
+                    origin_files=origin_files,
+                )
+                sql_session.add(status)
+
             sql_session.flush()
-
             return status.status_id
 
     @staticmethod
@@ -396,12 +426,12 @@ class MetaTracker:
     def get_failed_files(self) -> list:
         """Get all files with status 'FAILED'."""
         session = create_session(self.engine)
-        
+
         # Query the StatusTable for records with 'FAILED' processing status
         failed_files_query = (
             session.query(ScienceFileTable.s3_key, ScienceFileTable.s3_bucket)
             .join(StatusTable, StatusTable.science_file_id == ScienceFileTable.science_file_id)
-            .filter(StatusTable.processing_status == 'FAILED')
+            .filter(StatusTable.processing_status == "FAILED")
         )
 
         # Fetch the results and return them as a list of tuples (s3_key, s3_bucket)

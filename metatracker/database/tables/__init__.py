@@ -14,6 +14,7 @@ from . import instrument_table as InstrumentTable
 from . import science_file_table as ScienceFileTable
 from . import science_product_table as ScienceProductTable
 from . import status_table as StatusTable
+from metatracker.database.tables.status_table import status_origin_association
 
 
 def get_class_name(class_object: type) -> str:
@@ -325,6 +326,8 @@ def create_tables(engine: type) -> None:
     table_modules = get_table_modules()
     table_classes = get_table_classes(table_modules)
 
+    # Create Association Table for Status and Origin Files
+    status_origin_association.create(bind=engine, checkfirst=True)
     # Create Tables and Populate Data
     for table_class in table_classes:
         create_table(engine, table_class)

@@ -118,6 +118,7 @@ def test_create_tables():
         f"{MISSION_NAME}_science_file",
         f"{MISSION_NAME}_science_product",
         f"{MISSION_NAME}_status",
+        f"{MISSION_NAME}_status_origin_association",
     ]
 
     # Get tables
@@ -148,6 +149,7 @@ def test_create_tables_existing():
         f"{MISSION_NAME}_science_file",
         f"{MISSION_NAME}_science_product",
         f"{MISSION_NAME}_status",
+        f"{MISSION_NAME}_status_origin_association",
     ]
 
     # Get tables
@@ -180,6 +182,7 @@ def test_remove_tables():
         f"{MISSION_NAME}_science_file",
         f"{MISSION_NAME}_science_product",
         f"{MISSION_NAME}_status",
+        f"{MISSION_NAME}_status_origin_association",
     ]
 
     # Get tables

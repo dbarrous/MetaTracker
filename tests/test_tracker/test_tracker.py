@@ -218,14 +218,13 @@ def test_add_to_status_table() -> None:
     # Test: Add a new status entry
     processing_status = "SUCCESS"
     processing_status_message = "Processing started"
-    origin_file_id = None
+    origin_file_ids = []
 
     status_id = test_tracker.add_to_status_table(
         session=session,
         science_file_id=science_file_id,
         processing_status=processing_status,
         processing_status_message=processing_status_message,
-        origin_file_id=origin_file_id,
     )
 
     assert status_id is not None
@@ -239,7 +238,7 @@ def test_add_to_status_table() -> None:
         assert status_entry.processing_status == processing_status
         assert status_entry.processing_status_message == processing_status_message
         assert status_entry.reprocessed_count == 0  # Initial value
-        assert status_entry.origin_file_id == origin_file_id
+        assert status_entry.origin_files == origin_file_ids
 
     # Test: Update an existing status entry
     updated_processing_status = "FAILURE"
@@ -252,7 +251,7 @@ def test_add_to_status_table() -> None:
         processing_status=updated_processing_status,
         processing_status_message=updated_processing_status_message,
         processing_time_length=updated_processing_time_length,
-        origin_file_id=origin_file_id,
+        origin_file_ids=origin_file_ids,
     )
 
     assert updated_status_id == status_id  # Ensure the same entry was updated
@@ -440,7 +439,7 @@ def test_track() -> None:
         "processing_status": "SUCCESS",
         "processing_status_message": "Initial status",
         "processing_time_length": 60,
-        "origin_file_id": None,
+        "origin_file_ids": [],
     }
 
     test_tracker.track(file=file_path, s3_key=s3_key, s3_bucket=s3_bucket, status=test_status)
@@ -465,7 +464,7 @@ def test_track() -> None:
         assert status_entry.processing_status == test_status["processing_status"]
         assert status_entry.processing_status_message == test_status["processing_status_message"]
         assert status_entry.processing_time_length == test_status["processing_time_length"]
-        assert status_entry.origin_file_id == test_status["origin_file_id"]
+        assert status_entry.origin_files == test_status["origin_file_ids"]
 
     assert test_tracker is not None
 
@@ -485,3 +484,86 @@ def test_track() -> None:
 
     except ValueError as e:
         assert e is not None
+
+
+def test_add_to_status_table_with_origin_files():
+    """
+    Test add_to_status_table with origin files
+    """
+    engine = create_engine(TEST_DB_HOST)
+    session = create_session(engine)
+    create_tables(engine=engine)
+
+    # Create two science files to act as origin files
+    with session.begin() as sql_session:
+        origin_file_1 = ScienceFileTable(
+            science_product_id=1,
+            file_type="dat",
+            file_level="L1",
+            filename="origin_file_1",
+            file_version="1.0",
+            file_size=100,
+            s3_key="s3://test_bucket/origin_file_1.dat",
+            s3_bucket="test_bucket",
+            file_extension=".dat",
+            file_path="/tmp/origin_file_1.dat",
+            file_modified_timestamp=datetime.now(timezone.utc),
+            is_public=True,
+        )
+        origin_file_2 = ScienceFileTable(
+            science_product_id=1,
+            file_type="dat",
+            file_level="L1",
+            filename="origin_file_2",
+            file_version="1.0",
+            file_size=200,
+            s3_key="s3://test_bucket/origin_file_2.dat",
+            s3_bucket="test_bucket",
+            file_extension=".dat",
+            file_path="/tmp/origin_file_2.dat",
+            file_modified_timestamp=datetime.now(timezone.utc),
+            is_public=True,
+        )
+        sql_session.add_all([origin_file_1, origin_file_2])
+        sql_session.flush()
+        origin_file_ids = [origin_file_1.science_file_id, origin_file_2.science_file_id]
+
+        # Create the target science file for the status entry
+        science_file = ScienceFileTable(
+            science_product_id=1,
+            file_type="dat",
+            file_level="L1",
+            filename="target_file",
+            file_version="1.0",
+            file_size=300,
+            s3_key="s3://test_bucket/target_file.dat",
+            s3_bucket="test_bucket",
+            file_extension=".dat",
+            file_path="/tmp/target_file.dat",
+            file_modified_timestamp=datetime.now(timezone.utc),
+            is_public=True,
+        )
+        sql_session.add(science_file)
+        sql_session.flush()
+        science_file_id = science_file.science_file_id
+
+    # Now add status with origin files
+    science_file_parser = util.parse_science_filename
+    test_tracker = tracker.MetaTracker(engine=engine, science_file_parser=science_file_parser)
+
+    status_id = test_tracker.add_to_status_table(
+        session=session,
+        science_file_id=science_file_id,
+        processing_status="SUCCESS",
+        processing_status_message="Linked to origins",
+        origin_file_ids=origin_file_ids,
+    )
+    assert status_id is not None
+
+    # Verify: Check that the status entry was added and has the right origin files
+    with session.begin() as sql_session:
+        status_entry = sql_session.query(StatusTable).filter(StatusTable.science_file_id == science_file_id).first()
+        assert status_entry is not None
+        assert len(status_entry.origin_files) == 2
+        actual_origin_ids = {f.science_file_id for f in status_entry.origin_files}
+        assert set(origin_file_ids) == actual_origin_ids
